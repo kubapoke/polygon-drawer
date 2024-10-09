@@ -1,4 +1,4 @@
-using System.Diagnostics.Eventing.Reader;
+using System.Reflection;
 
 namespace PolygonDrawer
 {
@@ -7,7 +7,7 @@ namespace PolygonDrawer
         private bool CreatingNewPolygon = false, MovingPolygon = false, MovingPoint = false;
         private Polygon? Polygon = null;
         private int PrevMouseX, PrevMouseY;
-        private Point? MovedPoint, InspectedPoint;
+        private Point? MovedPoint, InspectedPoint, SuggestedPoint;
         private Line? InspectedLine;
 
         public Form1()
@@ -32,12 +32,22 @@ namespace PolygonDrawer
                 {
                     e.Graphics.DrawLine(pen, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y);
                 }
+
+                if (CreatingNewPolygon && Polygon.N > 0)
+                {
+                    var relativeMousePos = this.PointToClient(Cursor.Position);
+                    e.Graphics.DrawLine(pen, Polygon.Points[Polygon.N - 1].X, Polygon.Points[Polygon.N - 1].Y, relativeMousePos.X, relativeMousePos.Y);
+                }
             };
+
+            typeof(Panel).InvokeMember("DoubleBuffered",                                    // taken from https://stackoverflow.com/questions/8046560/how-to-stop-flickering-c-sharp-winforms
+            BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
+            null, mainSplitContainer.Panel1, new object[] { true });
         }
 
         private void adjustVertexToolStripMenu()
         {
-            if(Polygon != null)
+            if (Polygon != null)
             {
                 deleteVertexToolStripMenuItem.Enabled = Polygon.N > 3;
             }
@@ -47,7 +57,7 @@ namespace PolygonDrawer
         {
             if (Polygon != null)
             {
-                
+
             }
         }
 
@@ -95,10 +105,11 @@ namespace PolygonDrawer
                     {
                         InspectedLine = Polygon.Lines.Find(l => l.InBounds(e.X, e.Y));
 
-                        if(InspectedLine != null)
+                        if (InspectedLine != null)
                         {
                             adjustLineToolStripMenu();
                             lineContextMenuStrip.Show(Cursor.Position);
+                            SuggestedPoint = new Point(e.X, e.Y);
                         }
                     }
                 }
@@ -116,11 +127,6 @@ namespace PolygonDrawer
                     point.X += xMove;
                     point.Y += yMove;
                 }
-
-                mainSplitContainer.Panel1.Invalidate();
-
-                PrevMouseX = e.X;
-                PrevMouseY = e.Y;
             }
             else if (MovingPoint)
             {
@@ -128,12 +134,12 @@ namespace PolygonDrawer
 
                 MovedPoint!.X += xMove;
                 MovedPoint!.Y += yMove;
-
-                mainSplitContainer.Panel1.Invalidate();
-
-                PrevMouseX = e.X;
-                PrevMouseY = e.Y;
             }
+
+            mainSplitContainer.Panel1.Invalidate();
+
+            PrevMouseX = e.X;
+            PrevMouseY = e.Y;
         }
 
         private void mainSplitContainer_Panel1_MouseUp(object sender, MouseEventArgs e)
@@ -170,6 +176,12 @@ namespace PolygonDrawer
         private void deleteVertexToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Polygon!.DeletePoint(InspectedPoint!);
+            mainSplitContainer.Panel1.Invalidate();
+        }
+
+        private void addPointToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Polygon!.AddPoint(InspectedLine!, SuggestedPoint!);
             mainSplitContainer.Panel1.Invalidate();
         }
     }

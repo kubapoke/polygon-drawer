@@ -98,6 +98,7 @@
             addPointToolStripMenuItem.Name = "addPointToolStripMenuItem";
             addPointToolStripMenuItem.Size = new Size(180, 22);
             addPointToolStripMenuItem.Text = "add point";
+            addPointToolStripMenuItem.Click += addPointToolStripMenuItem_Click;
             // 
             // Form1
             // 

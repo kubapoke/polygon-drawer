@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PolygonDrawer
+﻿namespace PolygonDrawer
 {
     internal class Point
     {
@@ -44,17 +37,17 @@ namespace PolygonDrawer
         {
             int distX = int.MaxValue, distY = int.MaxValue;
 
-            if(x >= P1.X && x <= P2.X)
+            if (x >= Math.Min(P1.X, P2.X) && x <= Math.Max(P1.X, P2.X))
             {
                 if (P1.X == P2.X)
                     return 0;
 
-                int lineY = (int)Math.Round((double)P1.Y + ((double)(P2.Y - P1.Y) *  (double)(x - P1.X) / (double)(P2.X - P1.X)));
+                int lineY = (int)Math.Round((double)P1.Y + ((double)(P2.Y - P1.Y) * (double)(x - P1.X) / (double)(P2.X - P1.X)));
 
                 distY = Math.Abs(lineY - y);
             }
 
-            if (y >= P1.Y && y <= P2.Y)
+            if (y >= Math.Min(P1.Y, P2.Y) && y <= Math.Max(P1.Y, P2.Y))
             {
                 if (P1.Y == P2.Y)
                     return 0;
@@ -80,13 +73,13 @@ namespace PolygonDrawer
         public List<Point> Points = new List<Point>();
         public List<Line> Lines = new List<Line>();
 
-        public int N { get {  return Points.Count; } }
+        public int N { get { return Points.Count; } }
 
         public bool InBounds(int x, int y)
         {
             int minX = int.MaxValue, maxX = int.MinValue, minY = int.MaxValue, maxY = int.MinValue;
 
-            foreach(var point in Points)
+            foreach (var point in Points)
             {
                 minX = Math.Min(minX, point.X - Eps);
                 minY = Math.Min(minY, point.Y - Eps);
@@ -97,7 +90,7 @@ namespace PolygonDrawer
             return minX <= x && minY <= y && maxX >= x && maxY >= y;
         }
 
-        public void DeleteVertex(int v)
+        public void DeletePoint(int v)
         {
             Lines[(v - 1 + N) % N].P2 = Points[(v + 1) % N];
             Points.RemoveAt(v);
@@ -106,7 +99,20 @@ namespace PolygonDrawer
 
         public void DeletePoint(Point p)
         {
-            DeleteVertex(Points.FindIndex(a => a == p));
+            DeletePoint(Points.FindIndex(a => a == p));
+        }
+
+        public void AddPoint(int l, Point suggestedPoint)
+        {
+            Line newLine = new Line(suggestedPoint, Lines[l].P2);
+            Lines[l].P2 = suggestedPoint;
+            Points.Insert(l + 1, suggestedPoint);
+            Lines.Insert(l + 1, newLine);
+        }
+
+        public void AddPoint(Line l, Point suggestedPoint)
+        {
+            AddPoint(Lines.FindIndex(a => a == l), suggestedPoint);
         }
     }
 }
