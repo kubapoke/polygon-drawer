@@ -7,7 +7,8 @@ namespace PolygonDrawer
         private bool CreatingNewPolygon = false, MovingPolygon = false, MovingPoint = false;
         private Polygon? Polygon = null;
         private int PrevMouseX, PrevMouseY;
-        private Point? MovedPoint;
+        private Point? MovedPoint, InspectedPoint;
+        private Line? InspectedLine;
 
         public Form1()
         {
@@ -23,15 +24,31 @@ namespace PolygonDrawer
 
                 foreach (var point in Polygon.Points)
                 {
-                    var rectangle = new System.Drawing.Rectangle(point.X - Point.Eps, point.Y - Point.Eps, 2 * Point.Eps, 2 * Point.Eps);
+                    var rectangle = new System.Drawing.Rectangle(point.X - Polygon.Eps, point.Y - Polygon.Eps, 2 * Polygon.Eps, 2 * Polygon.Eps);
                     e.Graphics.FillEllipse(brush, rectangle);
                 }
 
                 foreach (var line in Polygon.Lines)
                 {
-                    e.Graphics.DrawLine(pen, line.p1.X, line.p1.Y, line.p2.X, line.p2.Y);
+                    e.Graphics.DrawLine(pen, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y);
                 }
             };
+        }
+
+        private void adjustVertexToolStripMenu()
+        {
+            if(Polygon != null)
+            {
+                deleteVertexToolStripMenuItem.Enabled = Polygon.N > 3;
+            }
+        }
+
+        private void adjustLineToolStripMenu()
+        {
+            if (Polygon != null)
+            {
+                
+            }
         }
 
         private void newPolyButton_Click(object sender, EventArgs e)
@@ -65,7 +82,26 @@ namespace PolygonDrawer
             }
             else if (e.Button == MouseButtons.Right)
             {
+                if (!CreatingNewPolygon && Polygon != null)
+                {
+                    InspectedPoint = Polygon.Points.Find(p => p.InBounds(e.X, e.Y));
 
+                    if (InspectedPoint != null)
+                    {
+                        adjustVertexToolStripMenu();
+                        vertexContextMenuStrip.Show(Cursor.Position);
+                    }
+                    else
+                    {
+                        InspectedLine = Polygon.Lines.Find(l => l.InBounds(e.X, e.Y));
+
+                        if(InspectedLine != null)
+                        {
+                            adjustLineToolStripMenu();
+                            lineContextMenuStrip.Show(Cursor.Position);
+                        }
+                    }
+                }
             }
         }
 
@@ -102,27 +138,39 @@ namespace PolygonDrawer
 
         private void mainSplitContainer_Panel1_MouseUp(object sender, MouseEventArgs e)
         {
-            MovingPolygon = false;
-            MovingPoint = false;
+            if (e.Button == MouseButtons.Left)
+            {
+                MovingPolygon = false;
+                MovingPoint = false;
+            }
         }
 
         private void mainSplitContainer_Panel1_MouseDown(object sender, MouseEventArgs e)
         {
-            if(!CreatingNewPolygon && Polygon != null)
+            if (e.Button == MouseButtons.Left)
             {
-                MovedPoint = Polygon.Points.Find(p => p.InBounds(e.X, e.Y));
+                if (!CreatingNewPolygon && Polygon != null)
+                {
+                    MovedPoint = Polygon.Points.Find(p => p.InBounds(e.X, e.Y));
 
-                if(MovedPoint != null)
-                {
-                    PrevMouseX = e.X; PrevMouseY = e.Y;
-                    MovingPoint = true;
-                }
-                else if(Polygon.InBounds(e.X, e.Y))
-                {
-                    PrevMouseX = e.X; PrevMouseY = e.Y;
-                    MovingPolygon = true;
+                    if (MovedPoint != null)
+                    {
+                        PrevMouseX = e.X; PrevMouseY = e.Y;
+                        MovingPoint = true;
+                    }
+                    else if (Polygon.InBounds(e.X, e.Y))
+                    {
+                        PrevMouseX = e.X; PrevMouseY = e.Y;
+                        MovingPolygon = true;
+                    }
                 }
             }
+        }
+
+        private void deleteVertexToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Polygon!.DeletePoint(InspectedPoint!);
+            mainSplitContainer.Panel1.Invalidate();
         }
     }
 }

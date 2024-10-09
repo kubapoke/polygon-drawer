@@ -28,11 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             mainSplitContainer = new SplitContainer();
             newPolyButton = new Button();
+            vertexContextMenuStrip = new ContextMenuStrip(components);
+            deleteVertexToolStripMenuItem = new ToolStripMenuItem();
+            lineContextMenuStrip = new ContextMenuStrip(components);
+            addPointToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)mainSplitContainer).BeginInit();
             mainSplitContainer.Panel2.SuspendLayout();
             mainSplitContainer.SuspendLayout();
+            vertexContextMenuStrip.SuspendLayout();
+            lineContextMenuStrip.SuspendLayout();
             SuspendLayout();
             // 
             // mainSplitContainer
@@ -67,6 +74,31 @@
             newPolyButton.UseVisualStyleBackColor = true;
             newPolyButton.Click += newPolyButton_Click;
             // 
+            // vertexContextMenuStrip
+            // 
+            vertexContextMenuStrip.Items.AddRange(new ToolStripItem[] { deleteVertexToolStripMenuItem });
+            vertexContextMenuStrip.Name = "contextMenuStrip1";
+            vertexContextMenuStrip.Size = new Size(107, 26);
+            // 
+            // deleteVertexToolStripMenuItem
+            // 
+            deleteVertexToolStripMenuItem.Name = "deleteVertexToolStripMenuItem";
+            deleteVertexToolStripMenuItem.Size = new Size(106, 22);
+            deleteVertexToolStripMenuItem.Text = "delete";
+            deleteVertexToolStripMenuItem.Click += deleteVertexToolStripMenuItem_Click;
+            // 
+            // lineContextMenuStrip
+            // 
+            lineContextMenuStrip.Items.AddRange(new ToolStripItem[] { addPointToolStripMenuItem });
+            lineContextMenuStrip.Name = "lineContextMenuStrip";
+            lineContextMenuStrip.Size = new Size(181, 48);
+            // 
+            // addPointToolStripMenuItem
+            // 
+            addPointToolStripMenuItem.Name = "addPointToolStripMenuItem";
+            addPointToolStripMenuItem.Size = new Size(180, 22);
+            addPointToolStripMenuItem.Text = "add point";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -79,6 +111,8 @@
             mainSplitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)mainSplitContainer).EndInit();
             mainSplitContainer.ResumeLayout(false);
+            vertexContextMenuStrip.ResumeLayout(false);
+            lineContextMenuStrip.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -86,5 +120,9 @@
 
         private SplitContainer mainSplitContainer;
         private Button newPolyButton;
+        private ContextMenuStrip vertexContextMenuStrip;
+        private ToolStripMenuItem deleteVertexToolStripMenuItem;
+        private ContextMenuStrip lineContextMenuStrip;
+        private ToolStripMenuItem addPointToolStripMenuItem;
     }
 }
