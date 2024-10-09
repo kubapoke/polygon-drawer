@@ -30,6 +30,8 @@
         {
             components = new System.ComponentModel.Container();
             mainSplitContainer = new SplitContainer();
+            bresenhamRadioButton = new RadioButton();
+            libraryRadioButton = new RadioButton();
             newPolyButton = new Button();
             vertexContextMenuStrip = new ContextMenuStrip(components);
             deleteVertexToolStripMenuItem = new ToolStripMenuItem();
@@ -58,10 +60,38 @@
             // 
             // mainSplitContainer.Panel2
             // 
+            mainSplitContainer.Panel2.Controls.Add(bresenhamRadioButton);
+            mainSplitContainer.Panel2.Controls.Add(libraryRadioButton);
             mainSplitContainer.Panel2.Controls.Add(newPolyButton);
             mainSplitContainer.Size = new Size(800, 450);
             mainSplitContainer.SplitterDistance = 600;
             mainSplitContainer.TabIndex = 0;
+            // 
+            // bresenhamRadioButton
+            // 
+            bresenhamRadioButton.Anchor = AnchorStyles.Top;
+            bresenhamRadioButton.AutoSize = true;
+            bresenhamRadioButton.Checked = true;
+            bresenhamRadioButton.Location = new System.Drawing.Point(10, 100);
+            bresenhamRadioButton.Name = "bresenhamRadioButton";
+            bresenhamRadioButton.Size = new Size(84, 19);
+            bresenhamRadioButton.TabIndex = 2;
+            bresenhamRadioButton.TabStop = true;
+            bresenhamRadioButton.Text = "Bresenham";
+            bresenhamRadioButton.UseVisualStyleBackColor = true;
+            bresenhamRadioButton.CheckedChanged += bresenhamRadioButton_CheckedChanged;
+            // 
+            // libraryRadioButton
+            // 
+            libraryRadioButton.Anchor = AnchorStyles.Top;
+            libraryRadioButton.AutoSize = true;
+            libraryRadioButton.Location = new System.Drawing.Point(10, 75);
+            libraryRadioButton.Name = "libraryRadioButton";
+            libraryRadioButton.Size = new Size(61, 19);
+            libraryRadioButton.TabIndex = 1;
+            libraryRadioButton.Text = "Library";
+            libraryRadioButton.UseVisualStyleBackColor = true;
+            libraryRadioButton.CheckedChanged += libraryRadioButton_CheckedChanged;
             // 
             // newPolyButton
             // 
@@ -91,12 +121,12 @@
             // 
             lineContextMenuStrip.Items.AddRange(new ToolStripItem[] { addPointToolStripMenuItem });
             lineContextMenuStrip.Name = "lineContextMenuStrip";
-            lineContextMenuStrip.Size = new Size(181, 48);
+            lineContextMenuStrip.Size = new Size(126, 26);
             // 
             // addPointToolStripMenuItem
             // 
             addPointToolStripMenuItem.Name = "addPointToolStripMenuItem";
-            addPointToolStripMenuItem.Size = new Size(180, 22);
+            addPointToolStripMenuItem.Size = new Size(125, 22);
             addPointToolStripMenuItem.Text = "add point";
             addPointToolStripMenuItem.Click += addPointToolStripMenuItem_Click;
             // 
@@ -110,6 +140,7 @@
             Name = "Form1";
             Text = "Form1";
             mainSplitContainer.Panel2.ResumeLayout(false);
+            mainSplitContainer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)mainSplitContainer).EndInit();
             mainSplitContainer.ResumeLayout(false);
             vertexContextMenuStrip.ResumeLayout(false);
@@ -125,5 +156,7 @@
         private ToolStripMenuItem deleteVertexToolStripMenuItem;
         private ContextMenuStrip lineContextMenuStrip;
         private ToolStripMenuItem addPointToolStripMenuItem;
+        private RadioButton bresenhamRadioButton;
+        private RadioButton libraryRadioButton;
     }
 }

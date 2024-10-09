@@ -28,15 +28,31 @@ namespace PolygonDrawer
                     e.Graphics.FillEllipse(brush, rectangle);
                 }
 
-                foreach (var line in Polygon.Lines)
+                if (libraryRadioButton.Checked)
                 {
-                    e.Graphics.DrawLine(pen, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y);
-                }
+                    foreach (var line in Polygon.Lines)
+                    {
+                        e.Graphics.DrawLine(pen, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y);
+                    }
 
-                if (CreatingNewPolygon && Polygon.N > 0)
+                    if (CreatingNewPolygon && Polygon.N > 0)
+                    {
+                        var relativeMousePos = this.PointToClient(Cursor.Position);
+                        e.Graphics.DrawLine(pen, Polygon.Points[Polygon.N - 1].X, Polygon.Points[Polygon.N - 1].Y, relativeMousePos.X, relativeMousePos.Y);
+                    }
+                }
+                else if (bresenhamRadioButton.Checked)
                 {
-                    var relativeMousePos = this.PointToClient(Cursor.Position);
-                    e.Graphics.DrawLine(pen, Polygon.Points[Polygon.N - 1].X, Polygon.Points[Polygon.N - 1].Y, relativeMousePos.X, relativeMousePos.Y);
+                    foreach (var line in Polygon.Lines)
+                    {
+                        LineDrawer.BresenhamDrawLine(e.Graphics, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y);
+                    }
+
+                    if (CreatingNewPolygon && Polygon.N > 0)
+                    {
+                        var relativeMousePos = this.PointToClient(Cursor.Position);
+                        LineDrawer.BresenhamDrawLine(e.Graphics, Polygon.Points[Polygon.N - 1].X, Polygon.Points[Polygon.N - 1].Y, relativeMousePos.X, relativeMousePos.Y);
+                    }
                 }
             };
 
@@ -61,11 +77,16 @@ namespace PolygonDrawer
             }
         }
 
+        private void redrawPolygon()
+        {
+            mainSplitContainer.Panel1.Invalidate();
+        }
+
         private void newPolyButton_Click(object sender, EventArgs e)
         {
             Polygon = new Polygon();
             CreatingNewPolygon = true;
-            mainSplitContainer.Panel1.Invalidate();
+            redrawPolygon();
         }
 
         private void mainSplitContainer_Panel1_MouseClick(object sender, MouseEventArgs e)
@@ -87,7 +108,7 @@ namespace PolygonDrawer
                             Polygon.Lines.Add(new Line(Polygon.Points[Polygon.N - 2], Polygon.Points[Polygon.N - 1]));
                     }
 
-                    mainSplitContainer.Panel1.Invalidate();
+                    redrawPolygon();
                 }
             }
             else if (e.Button == MouseButtons.Right)
@@ -136,7 +157,7 @@ namespace PolygonDrawer
                 MovedPoint!.Y += yMove;
             }
 
-            mainSplitContainer.Panel1.Invalidate();
+            redrawPolygon();
 
             PrevMouseX = e.X;
             PrevMouseY = e.Y;
@@ -176,13 +197,31 @@ namespace PolygonDrawer
         private void deleteVertexToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Polygon!.DeletePoint(InspectedPoint!);
-            mainSplitContainer.Panel1.Invalidate();
+            redrawPolygon();
         }
 
         private void addPointToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Polygon!.AddPoint(InspectedLine!, SuggestedPoint!);
-            mainSplitContainer.Panel1.Invalidate();
+            redrawPolygon();
+        }
+
+        private void libraryRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (libraryRadioButton.Checked)
+            {
+                bresenhamRadioButton.Checked = false;
+                redrawPolygon();
+            }
+        }
+
+        private void bresenhamRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (bresenhamRadioButton.Checked)
+            {
+                libraryRadioButton.Checked = false;
+                redrawPolygon();
+            }
         }
     }
 }
