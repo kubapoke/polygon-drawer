@@ -88,7 +88,7 @@ namespace PolygonDrawer
 
                 forceVerticalToolStripMenuItem.Enabled = InspectedLine.IsDefault() && !hasVerticalNeighbors;
                 forceHorizontalToolStripMenuItem.Enabled = InspectedLine.IsDefault() && !hasHorizontalNeighbors;
-                forceLengthToolStripMenuItem.Enabled = false; // InspectedLine.IsDefault();
+                forceLengthToolStripMenuItem.Enabled = InspectedLine.IsDefault();
                 setBezierCurveToolStripMenuItem.Enabled = false; // InspectedLine.IsDefault();
                 removeBoundsToolStripMenuItem.Enabled = !InspectedLine.IsDefault();
             }
@@ -176,7 +176,7 @@ namespace PolygonDrawer
             {
                 int xMove = e.X - PrevMouseX, yMove = e.Y - PrevMouseY;
 
-                MovedPoint!.MoveLocation(xMove, yMove);
+                MovedPoint!.MoveLocation(xMove, yMove, MovedPoint);
             }
 
             redrawPolygon();
@@ -266,7 +266,7 @@ namespace PolygonDrawer
         {
             if (InspectedLine != null)
             {
-                InspectedLine.ChangeState(Line.LineState.SetLength);
+                InspectedLine.ChangeState(Line.LineState.FixedLength);
             }
         }
 

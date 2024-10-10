@@ -29,8 +29,11 @@
             this.Y = y;
         }
 
-        public void MoveLocation(int dx, int dy)
+        public void MoveLocation(int dx, int dy, Point? originPoint = null, Point? prevPoint = null)
         {
+            if (this == originPoint && prevPoint != null)
+                return;
+
             this.X += dx;
             this.Y += dy;
 
@@ -41,12 +44,26 @@
                     case Line.LineState.None:
                         break;
                     case Line.LineState.Vertical:
-                        if (L1.P1.X != X)
-                            L1.P1.MoveLocation(dx, 0);
+                        if (L1.P1 != prevPoint && L1.P1.X != X)
+                            L1.P1.MoveLocation(dx, 0, originPoint, this);
                         break;
                     case Line.LineState.Horizontal:
-                        if (L1.P1.Y != Y)
-                            L1.P1.MoveLocation(0, dy);
+                        if (L1.P1 != prevPoint && L1.P1.Y != Y)
+                            L1.P1.MoveLocation(0, dy, originPoint, this);
+                        break;
+                    case Line.LineState.FixedLength:
+                        if (L1.P1 == prevPoint)
+                            break;
+
+                        double currentDistance = Math.Sqrt((double)((this.X - L1.P1.X) * (this.X - L1.P1.X)) + (double)((this.Y - L1.P1.Y) * (this.Y - L1.P1.Y)));
+                        double wantedDistance = Math.Sqrt((double)L1.LengthSquared);
+                        double multiplier = wantedDistance / currentDistance;
+
+                        int mx = (int)Math.Round((double)(L1.P1.X - this.X) * (multiplier - 1));
+                        int my = (int)Math.Round((double)(L1.P1.Y - this.Y) * (multiplier - 1));
+
+                        L1.P1.MoveLocation(mx, my, originPoint, this);
+
                         break;
                 }
             }
@@ -58,12 +75,25 @@
                     case Line.LineState.None:
                         break;
                     case Line.LineState.Vertical:
-                        if (L2.P2.X != X)
+                        if (L2.P2 != prevPoint && L2.P2.X != X)
                             L2.P2.MoveLocation(dx, 0);
                         break;
                     case Line.LineState.Horizontal:
-                        if (L2.P2.Y != Y)
+                        if (L2.P2 != prevPoint && L2.P2.Y != Y)
                             L2.P2.MoveLocation(0, dy);
+                        break;
+                    case Line.LineState.FixedLength:
+                        if (L2.P2 == prevPoint)
+                            break;
+
+                        double currentDistance = Math.Sqrt((double)((this.X - L2.P2.X) * (this.X - L2.P2.X)) + (double)((this.Y - L2.P2.Y) * (this.Y - L2.P2.Y)));
+                        double wantedDistance = Math.Sqrt((double)L2.LengthSquared);
+                        double multiplier = wantedDistance / currentDistance;
+
+                        int mx = (int)Math.Round((double)(L2.P2.X - this.X) * (multiplier - 1));
+                        int my = (int)Math.Round((double)(L2.P2.Y - this.Y) * (multiplier - 1));
+
+                        L2.P2.MoveLocation(mx, my, originPoint, this);
                         break;
                 }
             }
@@ -86,14 +116,14 @@
 
         public Point P1 { get; set; }
         public Point P2 { get; set; }
-        public int? Length { get; private set; } = null;
+        public int LengthSquared { get; private set; } = 0;
 
         public enum LineState
         {
             None,
             Vertical,
             Horizontal,
-            SetLength,
+            FixedLength,
             Bezier
         };
 
@@ -149,6 +179,9 @@
                 case LineState.Horizontal:
                     int avgY = (P1.Y + P2.Y) / 2;
                     P1.Y = P2.Y = avgY;
+                    break;
+                case LineState.FixedLength:
+                    LengthSquared = (P1.X - P2.X) * (P1.X - P2.X) + (P1.Y - P2.Y) * (P1.Y - P2.Y);
                     break;
             }
         }
