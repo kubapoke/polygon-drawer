@@ -76,11 +76,11 @@
                         break;
                     case Line.LineState.Vertical:
                         if (L2.P2 != prevPoint && L2.P2.X != X)
-                            L2.P2.MoveLocation(dx, 0);
+                            L2.P2.MoveLocation(dx, 0, originPoint, this);
                         break;
                     case Line.LineState.Horizontal:
                         if (L2.P2 != prevPoint && L2.P2.Y != Y)
-                            L2.P2.MoveLocation(0, dy);
+                            L2.P2.MoveLocation(0, dy, originPoint, this);
                         break;
                     case Line.LineState.FixedLength:
                         if (L2.P2 == prevPoint)
