@@ -52,6 +52,7 @@
             // mainSplitContainer
             // 
             mainSplitContainer.Dock = DockStyle.Fill;
+            mainSplitContainer.FixedPanel = FixedPanel.Panel2;
             mainSplitContainer.IsSplitterFixed = true;
             mainSplitContainer.Location = new System.Drawing.Point(0, 0);
             mainSplitContainer.Name = "mainSplitContainer";
@@ -127,47 +128,47 @@
             // 
             lineContextMenuStrip.Items.AddRange(new ToolStripItem[] { addPointToolStripMenuItem, forceVerticalToolStripMenuItem, forceHorizontalToolStripMenuItem, forceLengthToolStripMenuItem, setBezierCurveToolStripMenuItem, removeBoundsToolStripMenuItem });
             lineContextMenuStrip.Name = "lineContextMenuStrip";
-            lineContextMenuStrip.Size = new Size(181, 158);
+            lineContextMenuStrip.Size = new Size(158, 136);
             // 
             // addPointToolStripMenuItem
             // 
             addPointToolStripMenuItem.Name = "addPointToolStripMenuItem";
-            addPointToolStripMenuItem.Size = new Size(180, 22);
+            addPointToolStripMenuItem.Size = new Size(157, 22);
             addPointToolStripMenuItem.Text = "add point";
             addPointToolStripMenuItem.Click += addPointToolStripMenuItem_Click;
             // 
             // forceVerticalToolStripMenuItem
             // 
             forceVerticalToolStripMenuItem.Name = "forceVerticalToolStripMenuItem";
-            forceVerticalToolStripMenuItem.Size = new Size(180, 22);
+            forceVerticalToolStripMenuItem.Size = new Size(157, 22);
             forceVerticalToolStripMenuItem.Text = "force vertical";
             forceVerticalToolStripMenuItem.Click += forceVerticalToolStripMenuItem_Click;
             // 
             // forceHorizontalToolStripMenuItem
             // 
             forceHorizontalToolStripMenuItem.Name = "forceHorizontalToolStripMenuItem";
-            forceHorizontalToolStripMenuItem.Size = new Size(180, 22);
+            forceHorizontalToolStripMenuItem.Size = new Size(157, 22);
             forceHorizontalToolStripMenuItem.Text = "force horizontal";
             forceHorizontalToolStripMenuItem.Click += forceHorizontalToolStripMenuItem_Click;
             // 
             // forceLengthToolStripMenuItem
             // 
             forceLengthToolStripMenuItem.Name = "forceLengthToolStripMenuItem";
-            forceLengthToolStripMenuItem.Size = new Size(180, 22);
+            forceLengthToolStripMenuItem.Size = new Size(157, 22);
             forceLengthToolStripMenuItem.Text = "force length";
             forceLengthToolStripMenuItem.Click += forceLengthToolStripMenuItem_Click;
             // 
             // setBezierCurveToolStripMenuItem
             // 
             setBezierCurveToolStripMenuItem.Name = "setBezierCurveToolStripMenuItem";
-            setBezierCurveToolStripMenuItem.Size = new Size(180, 22);
+            setBezierCurveToolStripMenuItem.Size = new Size(157, 22);
             setBezierCurveToolStripMenuItem.Text = "set Bezier Curve";
             setBezierCurveToolStripMenuItem.Click += setBezierCurveToolStripMenuItem_Click;
             // 
             // removeBoundsToolStripMenuItem
             // 
             removeBoundsToolStripMenuItem.Name = "removeBoundsToolStripMenuItem";
-            removeBoundsToolStripMenuItem.Size = new Size(180, 22);
+            removeBoundsToolStripMenuItem.Size = new Size(157, 22);
             removeBoundsToolStripMenuItem.Text = "remove bounds";
             removeBoundsToolStripMenuItem.Click += removeBoundsToolStripMenuItem_Click;
             // 
@@ -179,7 +180,7 @@
             Controls.Add(mainSplitContainer);
             MinimumSize = new Size(816, 489);
             Name = "Form1";
-            Text = "Form1";
+            Text = "Polygon Drawer";
             mainSplitContainer.Panel2.ResumeLayout(false);
             mainSplitContainer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)mainSplitContainer).EndInit();
