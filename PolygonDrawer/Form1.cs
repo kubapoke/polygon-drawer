@@ -86,12 +86,41 @@ namespace PolygonDrawer
                 if (InspectedLine.P2.L2 != null && InspectedLine.P2.L2.State == Line.LineState.Horizontal)
                     hasHorizontalNeighbors = true;
 
-                forceVerticalToolStripMenuItem.Enabled = InspectedLine.IsDefault() && !hasVerticalNeighbors;
-                forceHorizontalToolStripMenuItem.Enabled = InspectedLine.IsDefault() && !hasHorizontalNeighbors;
-                forceLengthToolStripMenuItem.Enabled = InspectedLine.IsDefault();
+                forceVerticalToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Vertical && !hasVerticalNeighbors;
+                forceHorizontalToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Horizontal && !hasHorizontalNeighbors;
+                forceLengthToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.FixedLength;
                 setBezierCurveToolStripMenuItem.Enabled = false; // InspectedLine.IsDefault();
                 removeBoundsToolStripMenuItem.Enabled = !InspectedLine.IsDefault();
             }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) // overriden for creating shortcuts, for testing and fun
+        {
+            if (keyData == (Keys.Control | Keys.F))
+            {
+                if (!CreatingNewPolygon && Polygon != null)
+                {
+                    foreach (var line in Polygon.Lines)
+                    {
+                        line.ChangeState(Line.LineState.FixedLength);
+                    }
+                }
+
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.R))
+            {
+                if (!CreatingNewPolygon && Polygon != null)
+                {
+                    foreach (var line in Polygon.Lines)
+                    {
+                        line.ChangeState(Line.LineState.None);
+                    }
+                }
+
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void redrawPolygon()

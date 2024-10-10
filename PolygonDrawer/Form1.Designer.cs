@@ -30,6 +30,7 @@
         {
             components = new System.ComponentModel.Container();
             mainSplitContainer = new SplitContainer();
+            richTextBox1 = new RichTextBox();
             bresenhamRadioButton = new RadioButton();
             libraryRadioButton = new RadioButton();
             newPolyButton = new Button();
@@ -67,12 +68,23 @@
             // mainSplitContainer.Panel2
             // 
             mainSplitContainer.Panel2.BackColor = SystemColors.ControlLight;
+            mainSplitContainer.Panel2.Controls.Add(richTextBox1);
             mainSplitContainer.Panel2.Controls.Add(bresenhamRadioButton);
             mainSplitContainer.Panel2.Controls.Add(libraryRadioButton);
             mainSplitContainer.Panel2.Controls.Add(newPolyButton);
             mainSplitContainer.Size = new Size(800, 450);
             mainSplitContainer.SplitterDistance = 600;
             mainSplitContainer.TabIndex = 0;
+            // 
+            // richTextBox1
+            // 
+            richTextBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
+            richTextBox1.Enabled = false;
+            richTextBox1.Location = new System.Drawing.Point(3, 125);
+            richTextBox1.Name = "richTextBox1";
+            richTextBox1.Size = new Size(190, 322);
+            richTextBox1.TabIndex = 2;
+            richTextBox1.Text = "";
             // 
             // bresenhamRadioButton
             // 
@@ -205,5 +217,6 @@
         private ToolStripMenuItem forceLengthToolStripMenuItem;
         private ToolStripMenuItem setBezierCurveToolStripMenuItem;
         private ToolStripMenuItem removeBoundsToolStripMenuItem;
+        private RichTextBox richTextBox1;
     }
 }
