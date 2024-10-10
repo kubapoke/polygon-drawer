@@ -4,6 +4,8 @@
     {
         public int X { get; set; }
         public int Y { get; set; }
+        public Line? L1 { get; set; }
+        public Line? L2 { get; set; }
 
         public Point(int x, int y)
         {
@@ -20,6 +22,58 @@
         {
             return Distance(x, y) <= Polygon.Eps;
         }
+
+        public void SetLocation(int x, int y)
+        {
+            this.X = x;
+            this.Y = y;
+        }
+
+        public void MoveLocation(int dx, int dy)
+        {
+            this.X += dx;
+            this.Y += dy;
+
+            if (L1 != null)
+            {
+                switch (L1.State)
+                {
+                    case Line.LineState.None:
+                        break;
+                    case Line.LineState.Vertical:
+                        if (L1.P1.X != X)
+                            L1.P1.MoveLocation(dx, 0);
+                        break;
+                    case Line.LineState.Horizontal:
+                        if (L1.P1.Y != Y)
+                            L1.P1.MoveLocation(0, dy);
+                        break;
+                }
+            }
+
+            if (L2 != null)
+            {
+                switch (L2.State)
+                {
+                    case Line.LineState.None:
+                        break;
+                    case Line.LineState.Vertical:
+                        if (L2.P2.X != X)
+                            L2.P2.MoveLocation(dx, 0);
+                        break;
+                    case Line.LineState.Horizontal:
+                        if (L2.P2.Y != Y)
+                            L2.P2.MoveLocation(0, dy);
+                        break;
+                }
+            }
+        }
+
+        public void MoveLocationIndependent(int dx, int dy)
+        {
+            this.X += dx;
+            this.Y += dy;
+        }
     }
 
     internal class Line
@@ -32,6 +86,18 @@
 
         public Point P1 { get; set; }
         public Point P2 { get; set; }
+        public int? Length { get; private set; } = null;
+
+        public enum LineState
+        {
+            None,
+            Vertical,
+            Horizontal,
+            SetLength,
+            Bezier
+        };
+
+        public LineState State { get; private set; } = LineState.None;
 
         public int Distance(int x, int y)
         {
@@ -64,6 +130,28 @@
         {
             return Distance(x, y) <= Polygon.Eps;
         }
+
+        public bool IsDefault()
+        {
+            return this.State == LineState.None;
+        }
+
+        public void ChangeState(LineState newState)
+        {
+            this.State = newState;
+
+            switch (newState)
+            {
+                case LineState.Vertical:
+                    int avgX = (P1.X + P2.X) / 2;
+                    P1.X = P2.X = avgX;
+                    break;
+                case LineState.Horizontal:
+                    int avgY = (P1.Y + P2.Y) / 2;
+                    P1.Y = P2.Y = avgY;
+                    break;
+            }
+        }
     }
     internal class Polygon
     {
@@ -93,6 +181,10 @@
         public void DeletePoint(int v)
         {
             Lines[(v - 1 + N) % N].P2 = Points[(v + 1) % N];
+            Points[(v + 1) % N].L1 = Lines[(v - 1 + N) % N];
+
+            Lines[(v - 1 + N) % N].ChangeState(Line.LineState.None);
+
             Points.RemoveAt(v);
             Lines.RemoveAt(v);
         }
@@ -105,7 +197,14 @@
         public void AddPoint(int l, Point suggestedPoint)
         {
             Line newLine = new Line(suggestedPoint, Lines[l].P2);
+
+            suggestedPoint.L1 = Lines[l];
+            suggestedPoint.L2 = newLine;
+
             Lines[l].P2 = suggestedPoint;
+            Points[(l + 1) % N].L1 = newLine;
+
+            Lines[l].ChangeState(Line.LineState.None);
             Points.Insert(l + 1, suggestedPoint);
             Lines.Insert(l + 1, newLine);
         }

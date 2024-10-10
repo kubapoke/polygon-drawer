@@ -4,8 +4,9 @@ namespace PolygonDrawer
 {
     public partial class Form1 : Form
     {
+        internal static Polygon? Polygon = null;
+
         private bool CreatingNewPolygon = false, MovingPolygon = false, MovingPoint = false;
-        private Polygon? Polygon = null;
         private int PrevMouseX, PrevMouseY;
         private Point? MovedPoint, InspectedPoint, SuggestedPoint;
         private Line? InspectedLine;
@@ -71,9 +72,25 @@ namespace PolygonDrawer
 
         private void adjustLineToolStripMenu()
         {
-            if (Polygon != null)
+            if (Polygon != null && InspectedLine != null)
             {
+                bool hasVerticalNeighbors = false;
+                bool hasHorizontalNeighbors = false;
 
+                if (InspectedLine.P1.L1 != null && InspectedLine.P1.L1.State == Line.LineState.Vertical)
+                    hasVerticalNeighbors = true;
+                if (InspectedLine.P2.L2 != null && InspectedLine.P2.L2.State == Line.LineState.Vertical)
+                    hasVerticalNeighbors = true;
+                if (InspectedLine.P1.L1 != null && InspectedLine.P1.L1.State == Line.LineState.Horizontal)
+                    hasHorizontalNeighbors = true;
+                if (InspectedLine.P2.L2 != null && InspectedLine.P2.L2.State == Line.LineState.Horizontal)
+                    hasHorizontalNeighbors = true;
+
+                forceVerticalToolStripMenuItem.Enabled = InspectedLine.IsDefault() && !hasVerticalNeighbors;
+                forceHorizontalToolStripMenuItem.Enabled = InspectedLine.IsDefault() && !hasHorizontalNeighbors;
+                forceLengthToolStripMenuItem.Enabled = false; // InspectedLine.IsDefault();
+                setBezierCurveToolStripMenuItem.Enabled = false; // InspectedLine.IsDefault();
+                removeBoundsToolStripMenuItem.Enabled = !InspectedLine.IsDefault();
             }
         }
 
@@ -97,7 +114,9 @@ namespace PolygonDrawer
                 {
                     if (Polygon.N >= 3 && Polygon.Points[0].InBounds(e.X, e.Y))
                     {
-                        Polygon.Lines.Add(new Line(Polygon.Points[Polygon.N - 1], Polygon.Points[0]));
+                        Line line = new Line(Polygon.Points[Polygon.N - 1], Polygon.Points[0]);
+                        Polygon.Points[Polygon.N - 1].L2 = Polygon.Points[0].L1 = line;
+                        Polygon.Lines.Add(line);
 
                         CreatingNewPolygon = false;
                     }
@@ -105,7 +124,12 @@ namespace PolygonDrawer
                     {
                         Polygon.Points.Add(new Point(e.Location.X, e.Location.Y));
                         if (Polygon.N >= 2)
-                            Polygon.Lines.Add(new Line(Polygon.Points[Polygon.N - 2], Polygon.Points[Polygon.N - 1]));
+                        {
+                            Line line = new Line(Polygon.Points[Polygon.N - 2], Polygon.Points[Polygon.N - 1]);
+                            Polygon.Points[Polygon.N - 2].L2 = Polygon.Points[Polygon.N - 1].L1 = line;
+                            Polygon.Lines.Add(line);
+                        }
+
                     }
 
                     redrawPolygon();
@@ -145,16 +169,14 @@ namespace PolygonDrawer
 
                 foreach (var point in Polygon!.Points)
                 {
-                    point.X += xMove;
-                    point.Y += yMove;
+                    point.MoveLocationIndependent(xMove, yMove);
                 }
             }
             else if (MovingPoint)
             {
                 int xMove = e.X - PrevMouseX, yMove = e.Y - PrevMouseY;
 
-                MovedPoint!.X += xMove;
-                MovedPoint!.Y += yMove;
+                MovedPoint!.MoveLocation(xMove, yMove);
             }
 
             redrawPolygon();
@@ -221,6 +243,46 @@ namespace PolygonDrawer
             {
                 libraryRadioButton.Checked = false;
                 redrawPolygon();
+            }
+        }
+
+        private void forceVerticalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (InspectedLine != null)
+            {
+                InspectedLine.ChangeState(Line.LineState.Vertical);
+            }
+        }
+
+        private void forceHorizontalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (InspectedLine != null)
+            {
+                InspectedLine.ChangeState(Line.LineState.Horizontal);
+            }
+        }
+
+        private void forceLengthToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (InspectedLine != null)
+            {
+                InspectedLine.ChangeState(Line.LineState.SetLength);
+            }
+        }
+
+        private void setBezierCurveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (InspectedLine != null)
+            {
+                InspectedLine.ChangeState(Line.LineState.Bezier);
+            }
+        }
+
+        private void removeBoundsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (InspectedLine != null)
+            {
+                InspectedLine.ChangeState(Line.LineState.None);
             }
         }
     }
