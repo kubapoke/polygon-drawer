@@ -2,10 +2,10 @@
 {
     internal class LineDrawer
     {
-        private static System.Drawing.Pen Pen = new System.Drawing.Pen(System.Drawing.Color.Black);
+        private static System.Drawing.SolidBrush Brush = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
         private static void DrawPixel(Graphics g, int x, int y)
         {
-            g.DrawRectangle(Pen, x, y, 1, 1);
+            g.FillRectangle(Brush, x, y, 1, 1);
         }
         private static void DrawLineLow(Graphics g, int x1, int y1, int x2, int y2)
         {
