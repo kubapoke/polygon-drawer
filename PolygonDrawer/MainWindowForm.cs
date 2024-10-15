@@ -2,7 +2,7 @@ using System.Reflection;
 
 namespace PolygonDrawer
 {
-    public partial class Form1 : Form
+    public partial class MainWindowForm : Form
     {
         internal static Polygon? Polygon = null;
 
@@ -13,7 +13,7 @@ namespace PolygonDrawer
         private Action<Graphics, int, int, int, int, System.Drawing.Color?> DrawLineAction = Drawer.BresenhamDrawLine;
 
 
-        public Form1()
+        public MainWindowForm()
         {
             InitializeComponent();
 
@@ -227,6 +227,7 @@ namespace PolygonDrawer
             if (InspectedLine != null)
             {
                 InspectedLine.ChangeState(Line.LineState.Vertical);
+                redrawPolygon();
             }
         }
 
@@ -235,6 +236,7 @@ namespace PolygonDrawer
             if (InspectedLine != null)
             {
                 InspectedLine.ChangeState(Line.LineState.Horizontal);
+                redrawPolygon();
             }
         }
 
@@ -243,6 +245,7 @@ namespace PolygonDrawer
             if (InspectedLine != null)
             {
                 InspectedLine.ChangeState(Line.LineState.Bezier);
+                redrawPolygon();
             }
         }
 
@@ -251,6 +254,7 @@ namespace PolygonDrawer
             if (InspectedLine != null)
             {
                 InspectedLine.ChangeState(Line.LineState.None);
+                redrawPolygon();
             }
         }
 
@@ -268,6 +272,17 @@ namespace PolygonDrawer
             if (InspectedLine != null)
             {
                 InspectedLine.ChangeState(Line.LineState.FixedLength);
+                redrawPolygon();
+            }
+        }
+
+        private void setLengthToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (InspectedLine != null)
+            {
+                InspectedLine.ChangeState(Line.LineState.FixedLength);
+                InspectedLine.SetWantedLength(100);
+                redrawPolygon();
             }
         }
     }

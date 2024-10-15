@@ -1,6 +1,6 @@
 ﻿namespace PolygonDrawer
 {
-    partial class Form1
+    partial class MainWindowForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -42,10 +42,10 @@
             forceVerticalToolStripMenuItem = new ToolStripMenuItem();
             forceHorizontalToolStripMenuItem = new ToolStripMenuItem();
             forceLengthToolStripMenuItem = new ToolStripMenuItem();
-            setBezierCurveToolStripMenuItem = new ToolStripMenuItem();
-            removeBoundsToolStripMenuItem = new ToolStripMenuItem();
             currentLengthToolStripMenuItem = new ToolStripMenuItem();
             setLengthToolStripMenuItem = new ToolStripMenuItem();
+            setBezierCurveToolStripMenuItem = new ToolStripMenuItem();
+            removeBoundsToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)mainSplitContainer).BeginInit();
             mainSplitContainer.Panel2.SuspendLayout();
             mainSplitContainer.SuspendLayout();
@@ -184,6 +184,20 @@
             forceLengthToolStripMenuItem.Size = new Size(180, 22);
             forceLengthToolStripMenuItem.Text = "Force length...";
             // 
+            // currentLengthToolStripMenuItem
+            // 
+            currentLengthToolStripMenuItem.Name = "currentLengthToolStripMenuItem";
+            currentLengthToolStripMenuItem.Size = new Size(180, 22);
+            currentLengthToolStripMenuItem.Text = "Current length";
+            currentLengthToolStripMenuItem.Click += currentLengthToolStripMenuItem_Click;
+            // 
+            // setLengthToolStripMenuItem
+            // 
+            setLengthToolStripMenuItem.Name = "setLengthToolStripMenuItem";
+            setLengthToolStripMenuItem.Size = new Size(180, 22);
+            setLengthToolStripMenuItem.Text = "Set length";
+            setLengthToolStripMenuItem.Click += setLengthToolStripMenuItem_Click;
+            // 
             // setBezierCurveToolStripMenuItem
             // 
             setBezierCurveToolStripMenuItem.Name = "setBezierCurveToolStripMenuItem";
@@ -197,19 +211,6 @@
             removeBoundsToolStripMenuItem.Size = new Size(180, 22);
             removeBoundsToolStripMenuItem.Text = "Remove restrictions";
             removeBoundsToolStripMenuItem.Click += removeBoundsToolStripMenuItem_Click;
-            // 
-            // currentLengthToolStripMenuItem
-            // 
-            currentLengthToolStripMenuItem.Name = "currentLengthToolStripMenuItem";
-            currentLengthToolStripMenuItem.Size = new Size(180, 22);
-            currentLengthToolStripMenuItem.Text = "Current length";
-            currentLengthToolStripMenuItem.Click += currentLengthToolStripMenuItem_Click;
-            // 
-            // setLengthToolStripMenuItem
-            // 
-            setLengthToolStripMenuItem.Name = "setLengthToolStripMenuItem";
-            setLengthToolStripMenuItem.Size = new Size(180, 22);
-            setLengthToolStripMenuItem.Text = "Set length";
             // 
             // Form1
             // 

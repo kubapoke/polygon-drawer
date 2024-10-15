@@ -87,5 +87,27 @@
                     break;
             }
         }
+
+        public void SetWantedLength(double length)
+        {
+            WantedLength = length;
+
+            int midX = (int)Math.Round((P1.X + P2.X) / 2.0);
+            int midY = (int)Math.Round((P1.Y + P2.Y) / 2.0);
+
+            double dx = P2.X - P1.X;
+            double dy = P2.Y - P1.Y;
+            double currentLength = Length;
+
+            double unitX = dx / currentLength;
+            double unitY = dy / currentLength;
+
+            double halfLength = length / 2.0;
+            int offsetX = (int)Math.Round(unitX * halfLength);
+            int offsetY = (int)Math.Round(unitY * halfLength);
+
+            P1.MoveLocation(-P1.X + midX - offsetX, -P1.Y + midY - offsetY, P2);
+            P2.MoveLocation(-P2.X + midX + offsetX, -P2.Y + midY + offsetY, P1);
+        }
     }
 }
