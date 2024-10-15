@@ -24,7 +24,7 @@ namespace PolygonDrawer
 
                 DrawLineAction = libraryRadioButton.Checked ? LineDrawer.LibraryDrawLine : LineDrawer.BresenhamDrawLine;
 
-                Polygon.Draw(e.Graphics, DrawLineAction, this.PointToClient(Cursor.Position), CreatingNewPolygon);
+                Polygon.Draw(e.Graphics, DrawLineAction, this.PointToClient(Cursor.Position));
             };
 
             typeof(Panel).InvokeMember("DoubleBuffered",                                    // taken from https://stackoverflow.com/questions/8046560/how-to-stop-flickering-c-sharp-winforms
@@ -70,10 +70,7 @@ namespace PolygonDrawer
             {
                 if (!CreatingNewPolygon && Polygon != null)
                 {
-                    foreach (var line in Polygon.Lines)
-                    {
-                        line.ChangeState(Line.LineState.FixedLength);
-                    }
+                    Polygon.ChangeStateOfAllLines(Line.LineState.FixedLength);
                 }
 
                 return true;
@@ -82,10 +79,7 @@ namespace PolygonDrawer
             {
                 if (!CreatingNewPolygon && Polygon != null)
                 {
-                    foreach (var line in Polygon.Lines)
-                    {
-                        line.ChangeState(Line.LineState.None);
-                    }
+                    Polygon.ChangeStateOfAllLines(Line.LineState.None);
                 }
 
                 return true;
@@ -111,25 +105,7 @@ namespace PolygonDrawer
             {
                 if (CreatingNewPolygon && Polygon != null)
                 {
-                    if (Polygon.N >= 3 && Polygon.Points[0].InBounds(e.X, e.Y))
-                    {
-                        Line line = new Line(Polygon.Points[Polygon.N - 1], Polygon.Points[0]);
-                        Polygon.Points[Polygon.N - 1].L2 = Polygon.Points[0].L1 = line;
-                        Polygon.Lines.Add(line);
-
-                        CreatingNewPolygon = false;
-                    }
-                    else
-                    {
-                        Polygon.Points.Add(new Point(e.Location.X, e.Location.Y));
-                        if (Polygon.N >= 2)
-                        {
-                            Line line = new Line(Polygon.Points[Polygon.N - 2], Polygon.Points[Polygon.N - 1]);
-                            Polygon.Points[Polygon.N - 2].L2 = Polygon.Points[Polygon.N - 1].L1 = line;
-                            Polygon.Lines.Add(line);
-                        }
-
-                    }
+                    CreatingNewPolygon = Polygon.AddCreationPoint(e.X, e.Y);
 
                     redrawPolygon();
                 }
@@ -138,7 +114,7 @@ namespace PolygonDrawer
             {
                 if (!CreatingNewPolygon && Polygon != null)
                 {
-                    InspectedPoint = Polygon.Points.Find(p => p.InBounds(e.X, e.Y));
+                    InspectedPoint = Polygon.GetInspectedPoint(e.X, e.Y);
 
                     if (InspectedPoint != null)
                     {
@@ -147,7 +123,7 @@ namespace PolygonDrawer
                     }
                     else
                     {
-                        InspectedLine = Polygon.Lines.Find(l => l.InBounds(e.X, e.Y));
+                        InspectedLine = Polygon.GetInspectedLine(e.X, e.Y);
 
                         if (InspectedLine != null)
                         {
@@ -162,20 +138,17 @@ namespace PolygonDrawer
 
         private void mainSplitContainer_Panel1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (MovingPolygon)
+            if (Polygon != null && MovingPolygon)
             {
                 int xMove = e.X - PrevMouseX, yMove = e.Y - PrevMouseY;
 
-                foreach (var point in Polygon!.Points)
-                {
-                    point.MoveLocationIndependent(xMove, yMove);
-                }
+                Polygon.MovePolygon(xMove, yMove);
             }
-            else if (MovingPoint)
+            else if (MovedPoint != null && MovingPoint)
             {
                 int xMove = e.X - PrevMouseX, yMove = e.Y - PrevMouseY;
 
-                MovedPoint!.MoveLocation(xMove, yMove, MovedPoint);
+                MovedPoint.MoveLocation(xMove, yMove, MovedPoint);
             }
 
             redrawPolygon();
@@ -199,7 +172,7 @@ namespace PolygonDrawer
             {
                 if (!CreatingNewPolygon && Polygon != null)
                 {
-                    MovedPoint = Polygon.Points.Find(p => p.InBounds(e.X, e.Y));
+                    MovedPoint = Polygon.GetInspectedPoint(e.X, e.Y);
 
                     if (MovedPoint != null)
                     {

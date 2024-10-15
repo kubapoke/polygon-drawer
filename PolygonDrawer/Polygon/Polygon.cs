@@ -5,8 +5,9 @@
         public Polygon() { }
 
         public static readonly int Eps = 5;
-        public List<Point> Points = new List<Point>();
-        public List<Line> Lines = new List<Line>();
+        private List<Point> Points = new List<Point>();
+        private List<Line> Lines = new List<Line>();
+        private bool IsClosed = false;
 
         public int N { get { return Points.Count; } }
 
@@ -23,6 +24,32 @@
             }
 
             return minX <= x && minY <= y && maxX >= x && maxY >= y;
+        }
+
+        public bool AddCreationPoint(int x, int y)
+        {
+            if (IsClosed) return false;
+
+            if (N >= 3 && Points[0].InBounds(x, y))
+            {
+                Line line = new Line(Points[N - 1], Points[0]);
+                Points[N - 1].L2 = Points[0].L1 = line;
+                Lines.Add(line);
+
+                IsClosed = true;
+            }
+            else
+            {
+                Points.Add(new Point(x, y));
+                if (N >= 2)
+                {
+                    Line line = new Line(Points[N - 2], Points[N - 1]);
+                    Points[N - 2].L2 = Points[N - 1].L1 = line;
+                    Lines.Add(line);
+                }
+            }
+
+            return !IsClosed;
         }
 
         public void DeletePoint(int v)
@@ -61,8 +88,26 @@
             AddPoint(Lines.FindIndex(a => a == l), suggestedPoint);
         }
 
+        public void MovePolygon(int dx, int dy)
+        {
+            foreach (var point in Points)
+            {
+                point.MoveLocationIndependent(dx, dy);
+            }
+        }
+
+        public Point? GetInspectedPoint(int x, int y)
+        {
+            return Points.Find(p => p.InBounds(x, y));
+        }
+
+        public Line? GetInspectedLine(int x, int y)
+        {
+            return Lines.Find(l => l.InBounds(x, y));
+        }
+
         public void Draw(Graphics g, Action<Graphics, int, int, int, int, Color?> drawLineAction,
-            System.Drawing.Point relativeMousePos, bool creatingNewPolygon)
+            System.Drawing.Point relativeMousePos)
         {
             foreach (var point in Points)
             {
@@ -75,11 +120,18 @@
                 drawLineAction(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, null);
             }
 
-            if (creatingNewPolygon && N > 0)
+            if (!IsClosed && N > 0)
             {
                 drawLineAction(g, Points[N - 1].X, Points[N - 1].Y, relativeMousePos.X, relativeMousePos.Y, null);
             }
         }
 
+        public void ChangeStateOfAllLines(Line.LineState state)
+        {
+            foreach (var line in Lines)
+            {
+                line.ChangeState(state);
+            }
+        }
     }
 }
