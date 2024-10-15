@@ -195,7 +195,7 @@
             // 
             setLengthToolStripMenuItem.Name = "setLengthToolStripMenuItem";
             setLengthToolStripMenuItem.Size = new Size(180, 22);
-            setLengthToolStripMenuItem.Text = "Set length";
+            setLengthToolStripMenuItem.Text = "Set length...";
             setLengthToolStripMenuItem.Click += setLengthToolStripMenuItem_Click;
             // 
             // setBezierCurveToolStripMenuItem
@@ -212,14 +212,14 @@
             removeBoundsToolStripMenuItem.Text = "Remove restrictions";
             removeBoundsToolStripMenuItem.Click += removeBoundsToolStripMenuItem_Click;
             // 
-            // Form1
+            // MainWindowForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(mainSplitContainer);
             MinimumSize = new Size(816, 489);
-            Name = "Form1";
+            Name = "MainWindowForm";
             Text = "Polygon Drawer";
             mainSplitContainer.Panel2.ResumeLayout(false);
             mainSplitContainer.Panel2.PerformLayout();

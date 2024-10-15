@@ -280,9 +280,15 @@ namespace PolygonDrawer
         {
             if (InspectedLine != null)
             {
-                InspectedLine.ChangeState(Line.LineState.FixedLength);
-                InspectedLine.SetWantedLength(100);
-                redrawPolygon();
+                var inputForm = new LengthInputForm(InspectedLine.Length);
+
+                if (inputForm.ShowDialog() == DialogResult.OK && inputForm.Result != null)
+                {
+                    InspectedLine.SetWantedLength((double)inputForm.Result);
+
+                    InspectedLine.ChangeState(Line.LineState.FixedLength);
+                    redrawPolygon();
+                }
             }
         }
     }
