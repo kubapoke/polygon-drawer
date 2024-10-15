@@ -30,6 +30,7 @@
         {
             components = new System.ComponentModel.Container();
             mainSplitContainer = new SplitContainer();
+            captionButton = new Button();
             richTextBox1 = new RichTextBox();
             bresenhamRadioButton = new RadioButton();
             libraryRadioButton = new RadioButton();
@@ -43,7 +44,8 @@
             forceLengthToolStripMenuItem = new ToolStripMenuItem();
             setBezierCurveToolStripMenuItem = new ToolStripMenuItem();
             removeBoundsToolStripMenuItem = new ToolStripMenuItem();
-            captionButton = new Button();
+            currentLengthToolStripMenuItem = new ToolStripMenuItem();
+            setLengthToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)mainSplitContainer).BeginInit();
             mainSplitContainer.Panel2.SuspendLayout();
             mainSplitContainer.SuspendLayout();
@@ -77,6 +79,16 @@
             mainSplitContainer.Size = new Size(800, 450);
             mainSplitContainer.SplitterDistance = 600;
             mainSplitContainer.TabIndex = 0;
+            // 
+            // captionButton
+            // 
+            captionButton.Location = new System.Drawing.Point(10, 47);
+            captionButton.Name = "captionButton";
+            captionButton.Size = new Size(174, 29);
+            captionButton.TabIndex = 3;
+            captionButton.Text = "Captions: Enabled";
+            captionButton.UseVisualStyleBackColor = true;
+            captionButton.Click += captionButton_Click;
             // 
             // richTextBox1
             // 
@@ -129,72 +141,75 @@
             // 
             vertexContextMenuStrip.Items.AddRange(new ToolStripItem[] { deleteVertexToolStripMenuItem });
             vertexContextMenuStrip.Name = "contextMenuStrip1";
-            vertexContextMenuStrip.Size = new Size(138, 26);
+            vertexContextMenuStrip.Size = new Size(139, 26);
             // 
             // deleteVertexToolStripMenuItem
             // 
             deleteVertexToolStripMenuItem.Name = "deleteVertexToolStripMenuItem";
-            deleteVertexToolStripMenuItem.Size = new Size(137, 22);
-            deleteVertexToolStripMenuItem.Text = "delete point";
+            deleteVertexToolStripMenuItem.Size = new Size(138, 22);
+            deleteVertexToolStripMenuItem.Text = "Delete point";
             deleteVertexToolStripMenuItem.Click += deleteVertexToolStripMenuItem_Click;
             // 
             // lineContextMenuStrip
             // 
             lineContextMenuStrip.Items.AddRange(new ToolStripItem[] { addPointToolStripMenuItem, forceVerticalToolStripMenuItem, forceHorizontalToolStripMenuItem, forceLengthToolStripMenuItem, setBezierCurveToolStripMenuItem, removeBoundsToolStripMenuItem });
             lineContextMenuStrip.Name = "lineContextMenuStrip";
-            lineContextMenuStrip.Size = new Size(158, 136);
+            lineContextMenuStrip.Size = new Size(181, 158);
             // 
             // addPointToolStripMenuItem
             // 
             addPointToolStripMenuItem.Name = "addPointToolStripMenuItem";
-            addPointToolStripMenuItem.Size = new Size(157, 22);
-            addPointToolStripMenuItem.Text = "add point";
+            addPointToolStripMenuItem.Size = new Size(180, 22);
+            addPointToolStripMenuItem.Text = "Add point";
             addPointToolStripMenuItem.Click += addPointToolStripMenuItem_Click;
             // 
             // forceVerticalToolStripMenuItem
             // 
             forceVerticalToolStripMenuItem.Name = "forceVerticalToolStripMenuItem";
-            forceVerticalToolStripMenuItem.Size = new Size(157, 22);
-            forceVerticalToolStripMenuItem.Text = "force vertical";
+            forceVerticalToolStripMenuItem.Size = new Size(180, 22);
+            forceVerticalToolStripMenuItem.Text = "Make vertical";
             forceVerticalToolStripMenuItem.Click += forceVerticalToolStripMenuItem_Click;
             // 
             // forceHorizontalToolStripMenuItem
             // 
             forceHorizontalToolStripMenuItem.Name = "forceHorizontalToolStripMenuItem";
-            forceHorizontalToolStripMenuItem.Size = new Size(157, 22);
-            forceHorizontalToolStripMenuItem.Text = "force horizontal";
+            forceHorizontalToolStripMenuItem.Size = new Size(180, 22);
+            forceHorizontalToolStripMenuItem.Text = "Make horizontal";
             forceHorizontalToolStripMenuItem.Click += forceHorizontalToolStripMenuItem_Click;
             // 
             // forceLengthToolStripMenuItem
             // 
+            forceLengthToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { currentLengthToolStripMenuItem, setLengthToolStripMenuItem });
             forceLengthToolStripMenuItem.Name = "forceLengthToolStripMenuItem";
-            forceLengthToolStripMenuItem.Size = new Size(157, 22);
-            forceLengthToolStripMenuItem.Text = "force length";
-            forceLengthToolStripMenuItem.Click += forceLengthToolStripMenuItem_Click;
+            forceLengthToolStripMenuItem.Size = new Size(180, 22);
+            forceLengthToolStripMenuItem.Text = "Force length...";
             // 
             // setBezierCurveToolStripMenuItem
             // 
             setBezierCurveToolStripMenuItem.Name = "setBezierCurveToolStripMenuItem";
-            setBezierCurveToolStripMenuItem.Size = new Size(157, 22);
-            setBezierCurveToolStripMenuItem.Text = "set Bezier Curve";
+            setBezierCurveToolStripMenuItem.Size = new Size(180, 22);
+            setBezierCurveToolStripMenuItem.Text = "Create Bezier Curve";
             setBezierCurveToolStripMenuItem.Click += setBezierCurveToolStripMenuItem_Click;
             // 
             // removeBoundsToolStripMenuItem
             // 
             removeBoundsToolStripMenuItem.Name = "removeBoundsToolStripMenuItem";
-            removeBoundsToolStripMenuItem.Size = new Size(157, 22);
-            removeBoundsToolStripMenuItem.Text = "remove bounds";
+            removeBoundsToolStripMenuItem.Size = new Size(180, 22);
+            removeBoundsToolStripMenuItem.Text = "Remove restrictions";
             removeBoundsToolStripMenuItem.Click += removeBoundsToolStripMenuItem_Click;
             // 
-            // captionButton
+            // currentLengthToolStripMenuItem
             // 
-            captionButton.Location = new System.Drawing.Point(10, 47);
-            captionButton.Name = "captionButton";
-            captionButton.Size = new Size(174, 29);
-            captionButton.TabIndex = 3;
-            captionButton.Text = "Captions: Enabled";
-            captionButton.UseVisualStyleBackColor = true;
-            captionButton.Click += captionButton_Click;
+            currentLengthToolStripMenuItem.Name = "currentLengthToolStripMenuItem";
+            currentLengthToolStripMenuItem.Size = new Size(180, 22);
+            currentLengthToolStripMenuItem.Text = "Current length";
+            currentLengthToolStripMenuItem.Click += currentLengthToolStripMenuItem_Click;
+            // 
+            // setLengthToolStripMenuItem
+            // 
+            setLengthToolStripMenuItem.Name = "setLengthToolStripMenuItem";
+            setLengthToolStripMenuItem.Size = new Size(180, 22);
+            setLengthToolStripMenuItem.Text = "Set length";
             // 
             // Form1
             // 
@@ -231,5 +246,7 @@
         private ToolStripMenuItem removeBoundsToolStripMenuItem;
         private RichTextBox richTextBox1;
         private Button captionButton;
+        private ToolStripMenuItem currentLengthToolStripMenuItem;
+        private ToolStripMenuItem setLengthToolStripMenuItem;
     }
 }

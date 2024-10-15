@@ -58,7 +58,7 @@ namespace PolygonDrawer
 
                 forceVerticalToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Vertical && !hasVerticalNeighbors;
                 forceHorizontalToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Horizontal && !hasHorizontalNeighbors;
-                forceLengthToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.FixedLength;
+                currentLengthToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.FixedLength;
                 setBezierCurveToolStripMenuItem.Enabled = false; // InspectedLine.IsDefault();
                 removeBoundsToolStripMenuItem.Enabled = !InspectedLine.IsDefault();
             }
@@ -238,14 +238,6 @@ namespace PolygonDrawer
             }
         }
 
-        private void forceLengthToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (InspectedLine != null)
-            {
-                InspectedLine.ChangeState(Line.LineState.FixedLength);
-            }
-        }
-
         private void setBezierCurveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (InspectedLine != null)
@@ -269,6 +261,14 @@ namespace PolygonDrawer
             captionButton.Text = CaptionsEnabled ? "Captions: Enabled" : "Captions: Disabled";
 
             redrawPolygon();
+        }
+
+        private void currentLengthToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (InspectedLine != null)
+            {
+                InspectedLine.ChangeState(Line.LineState.FixedLength);
+            }
         }
     }
 }
