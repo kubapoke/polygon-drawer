@@ -76,11 +76,13 @@
             {
                 case LineState.Vertical:
                     int avgX = (P1.X + P2.X) / 2;
-                    P1.X = P2.X = avgX;
+                    P1.MoveLocation(avgX - P1.X, 0, P2);
+                    P2.MoveLocation(avgX - P2.X, 0, P1);
                     break;
                 case LineState.Horizontal:
                     int avgY = (P1.Y + P2.Y) / 2;
-                    P1.Y = P2.Y = avgY;
+                    P1.MoveLocation(0, avgY - P1.Y, P2);
+                    P2.MoveLocation(0, avgY - P2.Y, P1);
                     break;
                 case LineState.FixedLength:
                     WantedLength = Length;
