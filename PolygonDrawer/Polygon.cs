@@ -246,5 +246,26 @@
         {
             AddPoint(Lines.FindIndex(a => a == l), suggestedPoint);
         }
+
+        public void Draw(Graphics g, bool creatingNewPolygon, Action<Graphics, int, int, int, int, System.Drawing.Color?> drawLineAction,
+            System.Drawing.Point relativeMousePos)
+        {
+            foreach (var point in Points)
+            {
+                var rectangle = new System.Drawing.Rectangle(point.X - Polygon.Eps, point.Y - Polygon.Eps, 2 * Polygon.Eps, 2 * Polygon.Eps);
+                g.FillEllipse(new System.Drawing.SolidBrush(System.Drawing.Color.Black), rectangle);
+            }
+
+            foreach (var line in Lines)
+            {
+                drawLineAction(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, null);
+            }
+
+            if (creatingNewPolygon && N > 0)
+            {
+                drawLineAction(g, Points[N - 1].X, Points[N - 1].Y, relativeMousePos.X, relativeMousePos.Y, null);
+            }
+        }
+          
     }
 }

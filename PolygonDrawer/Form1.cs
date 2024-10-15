@@ -10,6 +10,8 @@ namespace PolygonDrawer
         private int PrevMouseX, PrevMouseY;
         private Point? MovedPoint, InspectedPoint, SuggestedPoint;
         private Line? InspectedLine;
+        private Action<Graphics, int, int, int, int, System.Drawing.Color?> DrawLineAction = LineDrawer.BresenhamDrawLine;
+      
 
         public Form1()
         {
@@ -18,43 +20,11 @@ namespace PolygonDrawer
             mainSplitContainer.Panel1.Paint += (sender, e) =>
             {
                 if (Polygon == null)
-                    return;
+                    return;                
 
-                var brush = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
-                var pen = new System.Drawing.Pen(System.Drawing.Color.Black);
+                DrawLineAction = libraryRadioButton.Checked ? LineDrawer.LibraryDrawLine : LineDrawer.BresenhamDrawLine;
 
-                foreach (var point in Polygon.Points)
-                {
-                    var rectangle = new System.Drawing.Rectangle(point.X - Polygon.Eps, point.Y - Polygon.Eps, 2 * Polygon.Eps, 2 * Polygon.Eps);
-                    e.Graphics.FillEllipse(brush, rectangle);
-                }
-
-                if (libraryRadioButton.Checked)
-                {
-                    foreach (var line in Polygon.Lines)
-                    {
-                        e.Graphics.DrawLine(pen, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y);
-                    }
-
-                    if (CreatingNewPolygon && Polygon.N > 0)
-                    {
-                        var relativeMousePos = this.PointToClient(Cursor.Position);
-                        e.Graphics.DrawLine(pen, Polygon.Points[Polygon.N - 1].X, Polygon.Points[Polygon.N - 1].Y, relativeMousePos.X, relativeMousePos.Y);
-                    }
-                }
-                else if (bresenhamRadioButton.Checked)
-                {
-                    foreach (var line in Polygon.Lines)
-                    {
-                        LineDrawer.BresenhamDrawLine(e.Graphics, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y);
-                    }
-
-                    if (CreatingNewPolygon && Polygon.N > 0)
-                    {
-                        var relativeMousePos = this.PointToClient(Cursor.Position);
-                        LineDrawer.BresenhamDrawLine(e.Graphics, Polygon.Points[Polygon.N - 1].X, Polygon.Points[Polygon.N - 1].Y, relativeMousePos.X, relativeMousePos.Y);
-                    }
-                }
+                Polygon.Draw(e.Graphics, CreatingNewPolygon, DrawLineAction, this.PointToClient(Cursor.Position));
             };
 
             typeof(Panel).InvokeMember("DoubleBuffered",                                    // taken from https://stackoverflow.com/questions/8046560/how-to-stop-flickering-c-sharp-winforms
