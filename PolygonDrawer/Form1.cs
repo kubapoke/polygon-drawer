@@ -11,7 +11,7 @@ namespace PolygonDrawer
         private Point? MovedPoint, InspectedPoint, SuggestedPoint;
         private Line? InspectedLine;
         private Action<Graphics, int, int, int, int, System.Drawing.Color?> DrawLineAction = LineDrawer.BresenhamDrawLine;
-      
+
 
         public Form1()
         {
@@ -20,11 +20,11 @@ namespace PolygonDrawer
             mainSplitContainer.Panel1.Paint += (sender, e) =>
             {
                 if (Polygon == null)
-                    return;                
+                    return;
 
                 DrawLineAction = libraryRadioButton.Checked ? LineDrawer.LibraryDrawLine : LineDrawer.BresenhamDrawLine;
 
-                Polygon.Draw(e.Graphics, CreatingNewPolygon, DrawLineAction, this.PointToClient(Cursor.Position));
+                Polygon.Draw(e.Graphics, DrawLineAction, this.PointToClient(Cursor.Position), CreatingNewPolygon);
             };
 
             typeof(Panel).InvokeMember("DoubleBuffered",                                    // taken from https://stackoverflow.com/questions/8046560/how-to-stop-flickering-c-sharp-winforms
