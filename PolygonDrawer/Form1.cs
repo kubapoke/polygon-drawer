@@ -114,7 +114,7 @@ namespace PolygonDrawer
             {
                 if (!CreatingNewPolygon && Polygon != null)
                 {
-                    InspectedPoint = Polygon.GetInspectedPoint(e.X, e.Y);
+                    InspectedPoint = Polygon.GetPointAtLocation(e.X, e.Y);
 
                     if (InspectedPoint != null)
                     {
@@ -123,7 +123,7 @@ namespace PolygonDrawer
                     }
                     else
                     {
-                        InspectedLine = Polygon.GetInspectedLine(e.X, e.Y);
+                        InspectedLine = Polygon.GetLineAtLocation(e.X, e.Y);
 
                         if (InspectedLine != null)
                         {
@@ -172,7 +172,7 @@ namespace PolygonDrawer
             {
                 if (!CreatingNewPolygon && Polygon != null)
                 {
-                    MovedPoint = Polygon.GetInspectedPoint(e.X, e.Y);
+                    MovedPoint = Polygon.GetPointAtLocation(e.X, e.Y);
 
                     if (MovedPoint != null)
                     {

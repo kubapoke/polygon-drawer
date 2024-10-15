@@ -56,7 +56,7 @@
                             break;
 
                         double currentDistance = Math.Sqrt((X - L1.P1.X) * (X - L1.P1.X) + (double)((Y - L1.P1.Y) * (Y - L1.P1.Y)));
-                        double wantedDistance = L1.Length;
+                        double wantedDistance = L1.WantedLength;
                         double multiplier = wantedDistance / currentDistance - 1;
 
                         int mx = (int)Math.Round((L1.P1.X - X) * multiplier);
@@ -87,7 +87,7 @@
                             break;
 
                         double currentDistance = Math.Sqrt((X - L2.P2.X) * (X - L2.P2.X) + (double)((Y - L2.P2.Y) * (Y - L2.P2.Y)));
-                        double wantedDistance = L2.Length;
+                        double wantedDistance = L2.WantedLength;
                         double multiplier = wantedDistance / currentDistance - 1;
 
                         int mx = (int)Math.Round((L2.P2.X - X) * multiplier);

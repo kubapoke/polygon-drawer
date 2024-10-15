@@ -10,7 +10,15 @@
 
         public Point P1 { get; set; }
         public Point P2 { get; set; }
-        public double Length { get; private set; } = 0;
+        public double Length
+        {
+            get
+            {
+                int dx = P1.X - P2.X, dy = P1.Y - P2.Y;
+                return Math.Sqrt(dx * dx + dy * dy);
+            }
+        }
+        public double WantedLength { get; private set; } = 0;
 
         public enum LineState
         {
@@ -75,7 +83,7 @@
                     P1.Y = P2.Y = avgY;
                     break;
                 case LineState.FixedLength:
-                    Length = Math.Sqrt((P1.X - P2.X) * (P1.X - P2.X) + (P1.Y - P2.Y) * (P1.Y - P2.Y));
+                    WantedLength = Length;
                     break;
             }
         }

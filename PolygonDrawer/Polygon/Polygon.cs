@@ -68,8 +68,30 @@
             DeletePoint(Points.FindIndex(a => a == p));
         }
 
+        private Point MovePointToLine(Line l, Point p)
+        {
+            float lineVecX = l.P2.X - l.P1.X;
+            float lineVecY = l.P2.Y - l.P1.Y;
+
+            float pointVecX = p.X - l.P1.X;
+            float pointVecY = p.Y - l.P1.Y;
+
+            float lineLenSq = lineVecX * lineVecX + lineVecY * lineVecY;
+            float t = (pointVecX * lineVecX + pointVecY * lineVecY) / lineLenSq;
+
+            float closestX = l.P1.X + t * lineVecX;
+            float closestY = l.P1.Y + t * lineVecY;
+
+            int roundedX = (int)Math.Round(closestX);
+            int roundedY = (int)Math.Round(closestY);
+
+            return new Point(roundedX, roundedY);
+        }
+
         public void AddPoint(int l, Point suggestedPoint)
         {
+            suggestedPoint = MovePointToLine(Lines[l], suggestedPoint);
+
             Line newLine = new Line(suggestedPoint, Lines[l].P2);
 
             suggestedPoint.L1 = Lines[l];
@@ -96,12 +118,12 @@
             }
         }
 
-        public Point? GetInspectedPoint(int x, int y)
+        public Point? GetPointAtLocation(int x, int y)
         {
             return Points.Find(p => p.InBounds(x, y));
         }
 
-        public Line? GetInspectedLine(int x, int y)
+        public Line? GetLineAtLocation(int x, int y)
         {
             return Lines.Find(l => l.InBounds(x, y));
         }
