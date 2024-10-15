@@ -6,11 +6,11 @@ namespace PolygonDrawer
     {
         internal static Polygon? Polygon = null;
 
-        private bool CreatingNewPolygon = false, MovingPolygon = false, MovingPoint = false;
+        private bool CreatingNewPolygon = false, MovingPolygon = false, MovingPoint = false, CaptionsEnabled = true;
         private int PrevMouseX, PrevMouseY;
         private Point? MovedPoint, InspectedPoint, SuggestedPoint;
         private Line? InspectedLine;
-        private Action<Graphics, int, int, int, int, System.Drawing.Color?> DrawLineAction = LineDrawer.BresenhamDrawLine;
+        private Action<Graphics, int, int, int, int, System.Drawing.Color?> DrawLineAction = Drawer.BresenhamDrawLine;
 
 
         public Form1()
@@ -22,9 +22,9 @@ namespace PolygonDrawer
                 if (Polygon == null)
                     return;
 
-                DrawLineAction = libraryRadioButton.Checked ? LineDrawer.LibraryDrawLine : LineDrawer.BresenhamDrawLine;
+                DrawLineAction = libraryRadioButton.Checked ? Drawer.LibraryDrawLine : Drawer.BresenhamDrawLine;
 
-                Polygon.Draw(e.Graphics, DrawLineAction, this.PointToClient(Cursor.Position));
+                Polygon.Draw(e.Graphics, DrawLineAction, this.PointToClient(Cursor.Position), CaptionsEnabled);
             };
 
             typeof(Panel).InvokeMember("DoubleBuffered",                                    // taken from https://stackoverflow.com/questions/8046560/how-to-stop-flickering-c-sharp-winforms
@@ -73,6 +73,8 @@ namespace PolygonDrawer
                     Polygon.ChangeStateOfAllLines(Line.LineState.FixedLength);
                 }
 
+                redrawPolygon();
+
                 return true;
             }
             else if (keyData == (Keys.Control | Keys.R))
@@ -81,6 +83,8 @@ namespace PolygonDrawer
                 {
                     Polygon.ChangeStateOfAllLines(Line.LineState.None);
                 }
+
+                redrawPolygon();
 
                 return true;
             }
@@ -256,6 +260,15 @@ namespace PolygonDrawer
             {
                 InspectedLine.ChangeState(Line.LineState.None);
             }
+        }
+
+        private void captionButton_Click(object sender, EventArgs e)
+        {
+            CaptionsEnabled = !CaptionsEnabled;
+
+            captionButton.Text = CaptionsEnabled ? "Captions: Enabled" : "Captions: Disabled";
+
+            redrawPolygon();
         }
     }
 }

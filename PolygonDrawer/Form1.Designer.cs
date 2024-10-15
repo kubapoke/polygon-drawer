@@ -43,6 +43,7 @@
             forceLengthToolStripMenuItem = new ToolStripMenuItem();
             setBezierCurveToolStripMenuItem = new ToolStripMenuItem();
             removeBoundsToolStripMenuItem = new ToolStripMenuItem();
+            captionButton = new Button();
             ((System.ComponentModel.ISupportInitialize)mainSplitContainer).BeginInit();
             mainSplitContainer.Panel2.SuspendLayout();
             mainSplitContainer.SuspendLayout();
@@ -68,6 +69,7 @@
             // mainSplitContainer.Panel2
             // 
             mainSplitContainer.Panel2.BackColor = SystemColors.ControlLight;
+            mainSplitContainer.Panel2.Controls.Add(captionButton);
             mainSplitContainer.Panel2.Controls.Add(richTextBox1);
             mainSplitContainer.Panel2.Controls.Add(bresenhamRadioButton);
             mainSplitContainer.Panel2.Controls.Add(libraryRadioButton);
@@ -117,7 +119,7 @@
             newPolyButton.Anchor = AnchorStyles.Top;
             newPolyButton.Location = new System.Drawing.Point(10, 12);
             newPolyButton.Name = "newPolyButton";
-            newPolyButton.Size = new Size(174, 57);
+            newPolyButton.Size = new Size(174, 29);
             newPolyButton.TabIndex = 0;
             newPolyButton.Text = "New Polygon";
             newPolyButton.UseVisualStyleBackColor = true;
@@ -184,6 +186,16 @@
             removeBoundsToolStripMenuItem.Text = "remove bounds";
             removeBoundsToolStripMenuItem.Click += removeBoundsToolStripMenuItem_Click;
             // 
+            // captionButton
+            // 
+            captionButton.Location = new System.Drawing.Point(10, 47);
+            captionButton.Name = "captionButton";
+            captionButton.Size = new Size(174, 29);
+            captionButton.TabIndex = 3;
+            captionButton.Text = "Captions: Enabled";
+            captionButton.UseVisualStyleBackColor = true;
+            captionButton.Click += captionButton_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -218,5 +230,6 @@
         private ToolStripMenuItem setBezierCurveToolStripMenuItem;
         private ToolStripMenuItem removeBoundsToolStripMenuItem;
         private RichTextBox richTextBox1;
+        private Button captionButton;
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace PolygonDrawer
 {
-    internal class LineDrawer
+    internal class Drawer
     {
         private static System.Drawing.SolidBrush Brush = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
         private static void DrawPixel(Graphics g, int x, int y, System.Drawing.Color color)
@@ -90,6 +90,33 @@
             System.Drawing.Color _color = color ?? System.Drawing.Color.Black;
 
             g.DrawLine(new System.Drawing.Pen(_color), x1, y1, x2, y2);
+        }
+
+        public static void DrawTextNextToLine(Graphics g, int x1, int y1, int x2, int y2, string text, System.Drawing.Color? color = null)
+        {
+            Color textColor = color ?? System.Drawing.Color.Blue;
+            Brush brush = new SolidBrush(textColor);
+            Font font = new Font("Arial", 12);
+
+            float midX = (x1 + x2) / 2f;
+            float midY = (y1 + y2) / 2f;
+
+            int dx = x2 - x1;
+            int dy = y2 - y1;
+
+            const int offset = 10;
+            float textX = midX, textY = midY;
+
+            if (Math.Abs(dx) > Math.Abs(dy))
+            {
+                textY += (dy > 0) ? offset : -offset;
+            }
+            else
+            {
+                textX += (dx > 0) ? offset : -offset;
+            }
+
+            g.DrawString(text, font, brush, new PointF(textX, textY));
         }
     }
 }

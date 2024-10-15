@@ -129,7 +129,7 @@
         }
 
         public void Draw(Graphics g, Action<Graphics, int, int, int, int, Color?> drawLineAction,
-            System.Drawing.Point relativeMousePos)
+            System.Drawing.Point relativeMousePos, bool captions = true)
         {
             foreach (var point in Points)
             {
@@ -140,6 +140,22 @@
             foreach (var line in Lines)
             {
                 drawLineAction(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, null);
+
+                if (captions)
+                {
+                    switch (line.State)
+                    {
+                        case Line.LineState.Horizontal:
+                            Drawer.DrawTextNextToLine(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, "_", null);
+                            break;
+                        case Line.LineState.Vertical:
+                            Drawer.DrawTextNextToLine(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, "|", null);
+                            break;
+                        case Line.LineState.FixedLength:
+                            Drawer.DrawTextNextToLine(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, $"{(int)Math.Round(line.WantedLength)}px", null);
+                            break;
+                    }
+                }
             }
 
             if (!IsClosed && N > 0)
