@@ -19,13 +19,14 @@
             }
         }
         public double WantedLength { get; private set; } = 0;
+        public BezierStructure? BezierStructure { get; private set; }
 
         public enum LineState
         {
             None,
             Vertical,
             Horizontal,
-            FixedLength,
+            ForcedLength,
             Bezier
         };
 
@@ -84,8 +85,11 @@
                     P1.MoveLocation(0, avgY - P1.Y, P2);
                     P2.MoveLocation(0, avgY - P2.Y, P1);
                     break;
-                case LineState.FixedLength:
+                case LineState.ForcedLength:
                     WantedLength = Length;
+                    break;
+                case LineState.Bezier:
+                    BezierStructure = new BezierStructure(this);
                     break;
             }
         }

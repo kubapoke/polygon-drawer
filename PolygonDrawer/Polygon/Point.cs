@@ -13,6 +13,17 @@
             Y = y;
         }
 
+        public enum PointState
+        {
+            None,
+            G0Continuous,
+            G1Continuous,
+            C1Continuous,
+            Bezier
+        }
+
+        public PointState State { get; private set; } = PointState.None;
+
         public int Distance(int x, int y)
         {
             return Math.Max(Math.Abs(x - X), Math.Abs(y - Y));
@@ -51,7 +62,7 @@
                         if (L1.P1 != prevPoint && L1.P1.Y != Y)
                             L1.P1.MoveLocation(0, Y - L1.P1.Y, originPoint, this);
                         break;
-                    case Line.LineState.FixedLength:
+                    case Line.LineState.ForcedLength:
                         if (L1.P1 == prevPoint)
                             break;
 
@@ -82,7 +93,7 @@
                         if (L2.P2 != prevPoint && L2.P2.Y != Y)
                             L2.P2.MoveLocation(0, Y - L2.P2.Y, originPoint, this);
                         break;
-                    case Line.LineState.FixedLength:
+                    case Line.LineState.ForcedLength:
                         if (L2.P2 == prevPoint)
                             break;
 

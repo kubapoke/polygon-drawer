@@ -58,8 +58,8 @@ namespace PolygonDrawer
 
                 forceVerticalToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Vertical && !hasVerticalNeighbors;
                 forceHorizontalToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Horizontal && !hasHorizontalNeighbors;
-                currentLengthToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.FixedLength;
-                setBezierCurveToolStripMenuItem.Enabled = false; // InspectedLine.IsDefault();
+                currentLengthToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.ForcedLength;
+                setBezierCurveToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Bezier;
                 removeBoundsToolStripMenuItem.Enabled = !InspectedLine.IsDefault();
             }
         }
@@ -70,7 +70,7 @@ namespace PolygonDrawer
             {
                 if (!CreatingNewPolygon && Polygon != null)
                 {
-                    Polygon.ChangeStateOfAllLines(Line.LineState.FixedLength);
+                    Polygon.ChangeStateOfAllLines(Line.LineState.ForcedLength);
                 }
 
                 redrawPolygon();
@@ -271,7 +271,7 @@ namespace PolygonDrawer
         {
             if (InspectedLine != null)
             {
-                InspectedLine.ChangeState(Line.LineState.FixedLength);
+                InspectedLine.ChangeState(Line.LineState.ForcedLength);
                 redrawPolygon();
             }
         }
@@ -286,7 +286,7 @@ namespace PolygonDrawer
                 {
                     InspectedLine.SetWantedLength((double)inputForm.Result);
 
-                    InspectedLine.ChangeState(Line.LineState.FixedLength);
+                    InspectedLine.ChangeState(Line.LineState.ForcedLength);
                     redrawPolygon();
                 }
             }

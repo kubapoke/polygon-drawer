@@ -139,21 +139,28 @@
 
             foreach (var line in Lines)
             {
-                drawLineAction(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, null);
-
-                if (captions)
+                if (line.State == Line.LineState.Bezier && line.BezierStructure != null)
                 {
-                    switch (line.State)
+                    line.BezierStructure.Draw(g, Drawer.BresenhamDrawDottedLine);
+                }
+                else
+                {
+                    drawLineAction(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, null);
+
+                    if (captions)
                     {
-                        case Line.LineState.Horizontal:
-                            Drawer.DrawTextNextToLine(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, "_", null);
-                            break;
-                        case Line.LineState.Vertical:
-                            Drawer.DrawTextNextToLine(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, "|", null);
-                            break;
-                        case Line.LineState.FixedLength:
-                            Drawer.DrawTextNextToLine(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, $"{(int)Math.Round(line.WantedLength)}px", null);
-                            break;
+                        switch (line.State)
+                        {
+                            case Line.LineState.Horizontal:
+                                Drawer.DrawTextNextToLine(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, "_", null);
+                                break;
+                            case Line.LineState.Vertical:
+                                Drawer.DrawTextNextToLine(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, "|", null);
+                                break;
+                            case Line.LineState.ForcedLength:
+                                Drawer.DrawTextNextToLine(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, $"{(int)Math.Round(line.WantedLength)}px", null);
+                                break;
+                        }
                     }
                 }
             }
