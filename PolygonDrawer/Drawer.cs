@@ -201,17 +201,75 @@
             g.DrawString(text, font, brush, new PointF(textX, textY));
         }
 
-        public static void DrawBezierCurve(Graphics g, Point V0, Point V1, Point V2, Point V3)
+        public struct DoublePoint
         {
-            int dx = V0.X - V3.X;
-            int dy = V0.Y - V3.Y;
+            public double X { get; set; }
+            public double Y { get; set; }
+
+            DoublePoint(double x, double y)
+            {
+                X = x;
+                Y = y;
+            }
+
+            public static implicit operator DoublePoint(Point other)
+            {
+                return new DoublePoint(other.X, other.Y);
+            }
+
+            public static DoublePoint operator +(DoublePoint lhs, DoublePoint rhs)
+            {
+                return new DoublePoint(lhs.X + rhs.X, lhs.Y + rhs.Y);
+            }
+
+            public static DoublePoint operator -(DoublePoint lhs, DoublePoint rhs)
+            {
+                return new DoublePoint(lhs.X - rhs.X, lhs.Y - rhs.Y);
+            }
+
+            public static DoublePoint operator *(DoublePoint lhs, double rhs)
+            {
+                return new DoublePoint(lhs.X * rhs, lhs.Y * rhs);
+            }
+
+            public static DoublePoint operator *(double lhs, DoublePoint rhs)
+            {
+                return new DoublePoint(rhs.X * lhs, rhs.Y * lhs);
+            }
+        }
+
+        public static void DrawBezierCurve(Graphics g, DoublePoint V0, DoublePoint V1, DoublePoint V2, DoublePoint V3)
+        {
+            double dx = V0.X - V3.X;
+            double dy = V0.Y - V3.Y;
             double length = Math.Sqrt(dx * dx + dy * dy);
             double d = 1 / length;
 
-            Point A0 = V0;
-            Point A1 = 3 * (V1 - V0);
-            Point A2 = 3 * (V2 - (2 * V1) + V0);
-            Point A3 = V3 - (3 * V2) + (3 * V1) - V0;
+            DoublePoint A0 = V0;
+            DoublePoint A1 = 3 * (V1 - V0);
+            DoublePoint A2 = 3 * (V2 - (2 * V1) + V0);
+            DoublePoint A3 = V3 - (3 * V2) + (3 * V1) - V0;
+
+            DoublePoint P = A0, prevP = A0;
+            DoublePoint dP = A3 * d * d * d + A2 * d * d + A1 * d;
+            DoublePoint d2P = 6 * A3 * d * d * d + 2 * A2 * d * d;
+            DoublePoint d3P = 6 * A3 * d * d * d;
+
+            for(int i = 0; i < length; i++)
+            {
+                prevP = P;
+
+                P = P + dP;
+                dP = dP + d2P;
+                d2P = d2P + d3P;
+
+                int x1 = (int)prevP.X;
+                int y1 = (int)prevP.Y;
+                int x2 = (int)P.X;
+                int y2 = (int)P.Y;
+
+                BresenhamDrawLine(g, x1, y1, x2, y2);
+            }
         }
     }
 }

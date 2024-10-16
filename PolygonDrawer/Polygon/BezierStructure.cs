@@ -99,7 +99,9 @@
 
         public void Draw(Graphics g, Action<Graphics, int, int, int, int, Color?> drawLineAction)
         {
-            for (int i = 0; i < Points.Length; i++)
+            Drawer.DrawBezierCurve(g, V0, V1, V2, V3);
+
+            for (int i = 0; i < Points.Length; i+=2)
             {
                 drawLineAction(g, Points[i].X, Points[i].Y, Points[(i + 1) % Points.Length].X, Points[(i + 1) % Points.Length].Y, null);
             }
