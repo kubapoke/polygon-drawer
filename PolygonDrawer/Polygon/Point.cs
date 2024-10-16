@@ -7,6 +7,24 @@
         public Line? L1 { get; set; }
         public Line? L2 { get; set; }
         public BezierStructure? BezierStructure { get; set; }
+        public bool ControlsContinuity
+        {
+            get
+            {
+                if (State == PointState.Bezier)
+                    return false;
+
+                if (L1 != null)
+                    if (L1.P1.State == PointState.Bezier)
+                        return true;
+
+                if (L2 != null)
+                    if (L2.P2.State == PointState.Bezier)
+                        return true;
+
+                return false;
+            }
+        }
 
         public Point(int x, int y)
         {
@@ -16,14 +34,13 @@
 
         public enum PointState
         {
-            None,
             G0Continuous,
             G1Continuous,
             C1Continuous,
             Bezier
         }
 
-        public PointState State { get; private set; } = PointState.None;
+        public PointState State { get; private set; } = PointState.G0Continuous;
 
         public int Distance(int x, int y)
         {
@@ -66,6 +83,8 @@
                 switch (L1.State)
                 {
                     case Line.LineState.None:
+                        if (L1.P1.ControlsContinuity)
+                            L1.P1.MoveLocation(0, 0, originPoint, this);
                         break;
                     case Line.LineState.Vertical:
                         if (L1.P1 != prevPoint && L1.P1.X != X)
@@ -97,6 +116,8 @@
                 switch (L2.State)
                 {
                     case Line.LineState.None:
+                        if (L2.P2.ControlsContinuity)
+                            L2.P2.MoveLocation(0, 0, originPoint, this);
                         break;
                     case Line.LineState.Vertical:
                         if (L2.P2 != prevPoint && L2.P2.X != X)
