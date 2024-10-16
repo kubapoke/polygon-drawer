@@ -21,6 +21,24 @@
                 minY = Math.Min(minY, point.Y - Eps);
                 maxX = Math.Max(maxX, point.X + Eps);
                 maxY = Math.Max(maxY, point.Y + Eps);
+
+
+            }
+
+            foreach (var line in Lines)
+            {
+                if (line.State == Line.LineState.Bezier && line.BezierStructure != null)
+                {
+                    minX = Math.Min(minX, line.BezierStructure.V1.X - Eps);
+                    minY = Math.Min(minY, line.BezierStructure.V1.Y - Eps);
+                    maxX = Math.Max(maxX, line.BezierStructure.V1.X + Eps);
+                    maxY = Math.Max(maxY, line.BezierStructure.V1.Y + Eps);
+
+                    minX = Math.Min(minX, line.BezierStructure.V2.X - Eps);
+                    minY = Math.Min(minY, line.BezierStructure.V2.Y - Eps);
+                    maxX = Math.Max(maxX, line.BezierStructure.V2.X + Eps);
+                    maxY = Math.Max(maxY, line.BezierStructure.V2.Y + Eps);
+                }
             }
 
             return minX <= x && minY <= y && maxX >= x && maxY >= y;
@@ -116,16 +134,41 @@
             {
                 point.MoveLocationIndependent(dx, dy);
             }
+
+            foreach (var line in Lines)
+            {
+                if (line.State == Line.LineState.Bezier && line.BezierStructure != null)
+                {
+                    line.BezierStructure.V1.MoveLocationIndependent(dx, dy);
+                    line.BezierStructure.V2.MoveLocationIndependent(dx, dy);
+                }
+            }
         }
 
         public Point? GetPointAtLocation(int x, int y)
         {
-            return Points.Find(p => p.InBounds(x, y));
+            foreach (var point in Points)
+            {
+                if (point.InBounds(x, y)) return point;
+
+                foreach (var line in Lines)
+                {
+                    if (line.State == Line.LineState.Bezier && line.BezierStructure != null)
+                    {
+                        if (line.BezierStructure.V1.InBounds(x, y))
+                            return line.BezierStructure.V1;
+                        else if (line.BezierStructure.V2.InBounds(x, y))
+                            return line.BezierStructure.V2;
+                    }
+                }
+            }
+
+            return null;
         }
 
         public Line? GetLineAtLocation(int x, int y)
         {
-            return Lines.Find(l => l.InBounds(x, y));
+            return Lines.Find(l => l.InBounds(x, y)) ?? Lines.Find(l => l.State == Line.LineState.Bezier && l.BezierStructure != null && l.BezierStructure.InBounds(x, y));
         }
 
         public void Draw(Graphics g, Action<Graphics, int, int, int, int, Color?> drawLineAction,

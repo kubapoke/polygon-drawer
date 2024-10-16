@@ -34,9 +34,9 @@ namespace PolygonDrawer
 
         private void adjustVertexToolStripMenu()
         {
-            if (Polygon != null)
+            if (Polygon != null && InspectedPoint != null)
             {
-                deleteVertexToolStripMenuItem.Enabled = Polygon.N > 3;
+                deleteVertexToolStripMenuItem.Enabled = InspectedPoint.State != Point.PointState.Bezier && Polygon.N > 3;
             }
         }
 
@@ -46,6 +46,7 @@ namespace PolygonDrawer
             {
                 bool hasVerticalNeighbors = false;
                 bool hasHorizontalNeighbors = false;
+                bool isBezierLine = false;
 
                 if (InspectedLine.P1.L1 != null && InspectedLine.P1.L1.State == Line.LineState.Vertical)
                     hasVerticalNeighbors = true;
@@ -55,10 +56,13 @@ namespace PolygonDrawer
                     hasHorizontalNeighbors = true;
                 if (InspectedLine.P2.L2 != null && InspectedLine.P2.L2.State == Line.LineState.Horizontal)
                     hasHorizontalNeighbors = true;
+                isBezierLine = InspectedLine.State == Line.LineState.Bezier;
 
-                forceVerticalToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Vertical && !hasVerticalNeighbors;
-                forceHorizontalToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Horizontal && !hasHorizontalNeighbors;
-                currentLengthToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.ForcedLength;
+                addPointToolStripMenuItem.Enabled = !isBezierLine;
+                forceVerticalToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Vertical && !hasVerticalNeighbors && !isBezierLine;
+                forceHorizontalToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Horizontal && !hasHorizontalNeighbors && !isBezierLine;
+                currentLengthToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.ForcedLength && !isBezierLine;
+                setLengthToolStripMenuItem.Enabled = !isBezierLine;
                 setBezierCurveToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Bezier;
                 removeBoundsToolStripMenuItem.Enabled = !InspectedLine.IsDefault();
             }
@@ -284,9 +288,9 @@ namespace PolygonDrawer
 
                 if (inputForm.ShowDialog() == DialogResult.OK && inputForm.Result != null)
                 {
+                    InspectedLine.ChangeState(Line.LineState.ForcedLength);
                     InspectedLine.SetWantedLength((double)inputForm.Result);
 
-                    InspectedLine.ChangeState(Line.LineState.ForcedLength);
                     redrawPolygon();
                 }
             }

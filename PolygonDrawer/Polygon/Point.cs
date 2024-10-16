@@ -115,5 +115,10 @@
             X += dx;
             Y += dy;
         }
+
+        public void ChangeState(PointState state)
+        {
+            State = state;
+        }
     }
 }

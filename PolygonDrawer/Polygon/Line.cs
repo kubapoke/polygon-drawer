@@ -71,6 +71,11 @@
 
         public void ChangeState(LineState newState)
         {
+            if (State == LineState.Bezier && newState != LineState.Bezier && BezierStructure != null)
+            {
+                P1.L2 = P2.L1 = this;
+            }
+
             State = newState;
 
             switch (newState)
