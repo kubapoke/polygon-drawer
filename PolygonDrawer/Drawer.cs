@@ -200,5 +200,18 @@
 
             g.DrawString(text, font, brush, new PointF(textX, textY));
         }
+
+        public static void DrawBezierCurve(Graphics g, Point V0, Point V1, Point V2, Point V3)
+        {
+            int dx = V0.X - V3.X;
+            int dy = V0.Y - V3.Y;
+            double length = Math.Sqrt(dx * dx + dy * dy);
+            double d = 1 / length;
+
+            Point A0 = V0;
+            Point A1 = 3 * (V1 - V0);
+            Point A2 = 3 * (V2 - (2 * V1) + V0);
+            Point A3 = V3 - (3 * V2) + (3 * V1) - V0;
+        }
     }
 }
