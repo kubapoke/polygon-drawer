@@ -34,13 +34,14 @@
 
         public enum PointState
         {
+            None,
             G0Continuous,
             G1Continuous,
             C1Continuous,
             Bezier
         }
 
-        public PointState State { get; private set; } = PointState.G0Continuous;
+        public PointState State { get; private set; } = PointState.None;
 
         public int Distance(int x, int y)
         {
@@ -63,7 +64,7 @@
             if (this == originPoint && prevPoint != null)
                 return;
 
-            if(this.State != PointState.Bezier)
+            if (this.State != PointState.Bezier)
             {
                 if (L1 != null && L1.P1.State == PointState.Bezier && L1.P1.BezierStructure != null)
                 {

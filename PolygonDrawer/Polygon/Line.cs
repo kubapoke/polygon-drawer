@@ -71,12 +71,16 @@
 
         public void ChangeState(LineState newState)
         {
-            if (State == LineState.Bezier && newState != LineState.Bezier && BezierStructure != null)
-            {
-                P1.L2 = P2.L1 = this;
-            }
+            bool fromBezier = State == LineState.Bezier && newState != LineState.Bezier;
 
             State = newState;
+
+            if (fromBezier)
+            {
+                P1.L2 = P2.L1 = this;
+                if (!P1.ControlsContinuity) P1.ChangeState(Point.PointState.None);
+                if (!P2.ControlsContinuity) P2.ChangeState(Point.PointState.None);
+            }
 
             switch (newState)
             {
@@ -95,6 +99,10 @@
                     break;
                 case LineState.Bezier:
                     BezierStructure = new BezierStructure(this);
+                    if (P1.State == Point.PointState.None)
+                        P1.ChangeState(Point.PointState.C1Continuous);
+                    if (P2.State == Point.PointState.None)
+                        P2.ChangeState(Point.PointState.C1Continuous);
                     break;
             }
         }

@@ -37,6 +37,9 @@ namespace PolygonDrawer
             if (Polygon != null && InspectedPoint != null)
             {
                 deleteVertexToolStripMenuItem.Enabled = InspectedPoint.State != Point.PointState.Bezier && Polygon.N > 3;
+                setG0ContinuityToolStripMenuItem.Enabled = InspectedPoint.ControlsContinuity && InspectedPoint.State != Point.PointState.G0Continuous;
+                setG1ContinuityToolStripMenuItem.Enabled = InspectedPoint.ControlsContinuity && InspectedPoint.State != Point.PointState.G1Continuous;
+                setC1ContinuityToolStripMenuItem.Enabled = InspectedPoint.ControlsContinuity && InspectedPoint.State != Point.PointState.C1Continuous;
             }
         }
 
@@ -304,6 +307,33 @@ namespace PolygonDrawer
 
                     redrawPolygon();
                 }
+            }
+        }
+
+        private void setG0ContinuityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (InspectedPoint != null)
+            {
+                InspectedPoint.ChangeState(Point.PointState.G0Continuous);
+                redrawPolygon();
+            }
+        }
+
+        private void setG1ContinuityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (InspectedPoint != null)
+            {
+                InspectedPoint.ChangeState(Point.PointState.G1Continuous);
+                redrawPolygon();
+            }
+        }
+
+        private void setC1ContinuityToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (InspectedPoint != null)
+            {
+                InspectedPoint.ChangeState(Point.PointState.C1Continuous);
+                redrawPolygon();
             }
         }
     }

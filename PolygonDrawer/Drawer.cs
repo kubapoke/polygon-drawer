@@ -69,6 +69,9 @@
         {
             System.Drawing.Color _color = color ?? System.Drawing.Color.Black;
 
+            if (x1 == x2 && y1 == y2)
+                return;
+
             if (Math.Abs(y2 - y1) < Math.Abs(x2 - x1))
             {
                 if (x1 > x2)
@@ -150,6 +153,9 @@
         public static void BresenhamDrawDottedLine(Graphics g, int x1, int y1, int x2, int y2, System.Drawing.Color? color = null)
         {
             System.Drawing.Color _color = color ?? System.Drawing.Color.Gray;
+
+            if (x1 == x2 && y1 == y2)
+                return;
 
             if (Math.Abs(y2 - y1) < Math.Abs(x2 - x1))
             {
@@ -243,6 +249,10 @@
             double dx = V0.X - V3.X;
             double dy = V0.Y - V3.Y;
             double length = Math.Sqrt(dx * dx + dy * dy);
+
+            if (length <= 0)
+                return;
+
             double d = 1 / length;
 
             DoublePoint A0 = V0;
@@ -255,7 +265,7 @@
             DoublePoint d2P = 6 * A3 * d * d * d + 2 * A2 * d * d;
             DoublePoint d3P = 6 * A3 * d * d * d;
 
-            for(int i = 0; i < length; i++)
+            for (int i = 0; i < length; i++)
             {
                 prevP = P;
 
