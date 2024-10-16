@@ -81,6 +81,17 @@ namespace PolygonDrawer
 
                 return true;
             }
+            else if (keyData == (Keys.Shift | Keys.Control | Keys.F))
+            {
+                if (!CreatingNewPolygon && Polygon != null)
+                {
+                    Polygon.ChangeStateOfAllLines(Line.LineState.ForcedLength, 100);
+                }
+
+                redrawPolygon();
+
+                return true;
+            }
             else if (keyData == (Keys.Control | Keys.R))
             {
                 if (!CreatingNewPolygon && Polygon != null)
@@ -284,7 +295,7 @@ namespace PolygonDrawer
         {
             if (InspectedLine != null)
             {
-                var inputForm = new LengthInputForm(InspectedLine.Length);
+                var inputForm = new LengthInputForm(InspectedLine.State == Line.LineState.ForcedLength ? InspectedLine.WantedLength : InspectedLine.Length);
 
                 if (inputForm.ShowDialog() == DialogResult.OK && inputForm.Result != null)
                 {

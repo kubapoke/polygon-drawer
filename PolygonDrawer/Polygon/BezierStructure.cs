@@ -88,6 +88,8 @@
             V1.ChangeState(Point.PointState.Bezier);
             V2.ChangeState(Point.PointState.Bezier);
 
+            V1.BezierStructure = V2.BezierStructure = this;
+
             L0 = new Line(V0, V1);
             L1 = new Line(V1, V2);
             L2 = new Line(V2, V3);
@@ -127,6 +129,46 @@
             }
 
             return minX <= x && minY <= y && maxX >= x && maxY >= y;
+        }
+
+        public void AdjustCurvePoints(Point V, int dx, int dy)
+        {
+            bool movedV0 = V == V0;
+            Point stationary = movedV0 ? V3 : V0;
+            Point moved = V;
+
+            double originalDx = moved.X - stationary.X;
+            double originalDy = moved.Y - stationary.Y;
+
+            double newDx = originalDx + dx;
+            double newDy = originalDy + dy;
+
+            double scale = Math.Sqrt(newDx * newDx + newDy * newDy) /
+                           Math.Sqrt(originalDx * originalDx + originalDy * originalDy);
+
+            double originalAngle = Math.Atan2(originalDy, originalDx);
+            double newAngle = Math.Atan2(newDy, newDx);
+            double rotation = newAngle - originalAngle;
+
+            MovePoint(V1, stationary, scale, rotation);
+            MovePoint(V2, stationary, scale, rotation);
+        }
+
+        private void MovePoint(Point point, Point reference, double scale, double rotation)
+        {
+            double translatedX = point.X - reference.X;
+            double translatedY = point.Y - reference.Y;
+
+            translatedX *= scale;
+            translatedY *= scale;
+
+            double rotatedX = translatedX * Math.Cos(rotation) - translatedY * Math.Sin(rotation);
+            double rotatedY = translatedX * Math.Sin(rotation) + translatedY * Math.Cos(rotation);
+
+            int finalX = (int)Math.Round(rotatedX + reference.X);
+            int finalY = (int)Math.Round(rotatedY + reference.Y);
+
+            point.MoveLocationIndependent(finalX - point.X, finalY - point.Y);
         }
     }
 }

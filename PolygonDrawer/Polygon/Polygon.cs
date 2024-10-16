@@ -21,8 +21,6 @@
                 minY = Math.Min(minY, point.Y - Eps);
                 maxX = Math.Max(maxX, point.X + Eps);
                 maxY = Math.Max(maxY, point.Y + Eps);
-
-
             }
 
             foreach (var line in Lines)
@@ -214,11 +212,14 @@
             }
         }
 
-        public void ChangeStateOfAllLines(Line.LineState state)
+        public void ChangeStateOfAllLines(Line.LineState? state = null, double? length = null)
         {
             foreach (var line in Lines)
             {
-                line.ChangeState(state);
+                if(state != null)
+                    line.ChangeState((Line.LineState)state);
+                if (length != null)
+                    line.SetWantedLength((double)length);
             }
         }
     }

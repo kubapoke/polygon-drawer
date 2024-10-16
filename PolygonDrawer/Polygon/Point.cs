@@ -6,6 +6,7 @@
         public int Y { get; set; }
         public Line? L1 { get; set; }
         public Line? L2 { get; set; }
+        public BezierStructure? BezierStructure { get; set; }
 
         public Point(int x, int y)
         {
@@ -44,6 +45,18 @@
         {
             if (this == originPoint && prevPoint != null)
                 return;
+
+            if(this.State != PointState.Bezier)
+            {
+                if (L1 != null && L1.P1.State == PointState.Bezier && L1.P1.BezierStructure != null)
+                {
+                    L1.P1.BezierStructure.AdjustCurvePoints(this, dx, dy);
+                }
+                if (L2 != null && L2.P2.State == PointState.Bezier && L2.P2.BezierStructure != null)
+                {
+                    L2.P2.BezierStructure.AdjustCurvePoints(this, dx, dy);
+                }
+            }
 
             X += dx;
             Y += dy;
