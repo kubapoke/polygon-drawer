@@ -141,9 +141,6 @@
                         break;
                 }
             }
-
-            P1.MoveLocation(0, 0);
-            P2.MoveLocation(0, 0);
         }
 
         public void SetWantedLength(double length)
