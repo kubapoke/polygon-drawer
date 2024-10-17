@@ -266,6 +266,8 @@
             if (length <= 0)
                 return;
 
+            length = Math.Max(length, 50.0);
+
             double d = 1 / length;
 
             DoublePoint A0 = V0;
