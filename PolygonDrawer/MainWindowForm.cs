@@ -77,6 +77,7 @@ namespace PolygonDrawer
             {
                 if (!CreatingNewPolygon && Polygon != null)
                 {
+                    Polygon.ChangeStateOfAllLines(Line.LineState.None);
                     Polygon.ChangeStateOfAllLines(Line.LineState.ForcedLength);
                 }
 
@@ -88,6 +89,7 @@ namespace PolygonDrawer
             {
                 if (!CreatingNewPolygon && Polygon != null)
                 {
+                    Polygon.ChangeStateOfAllLines(Line.LineState.None);
                     Polygon.ChangeStateOfAllLines(Line.LineState.ForcedLength, 100);
                 }
 
@@ -110,6 +112,7 @@ namespace PolygonDrawer
             {
                 if (!CreatingNewPolygon && Polygon != null)
                 {
+                    Polygon.ChangeStateOfAllLines(Line.LineState.None);
                     Polygon.ChangeStateOfAllLines(Line.LineState.Bezier);
                 }
 
