@@ -74,6 +74,7 @@
             Points[(v + 1) % N].L1 = Lines[(v - 1 + N) % N];
 
             Lines[(v - 1 + N) % N].ChangeState(Line.LineState.None);
+            Lines[v].ChangeState(Line.LineState.None);
 
             Points.RemoveAt(v);
             Lines.RemoveAt(v);
@@ -216,7 +217,7 @@
         {
             foreach (var line in Lines)
             {
-                if(state != null)
+                if (state != null)
                     line.ChangeState((Line.LineState)state);
                 if (length != null)
                     line.SetWantedLength((double)length);

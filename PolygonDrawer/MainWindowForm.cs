@@ -170,7 +170,7 @@ namespace PolygonDrawer
             {
                 int xMove = e.X - PrevMouseX, yMove = e.Y - PrevMouseY;
 
-                MovedPoint.MoveLocation(xMove, yMove, MovedPoint);
+                MovedPoint.MoveLocation(xMove, yMove);
             }
 
             redrawPolygon();

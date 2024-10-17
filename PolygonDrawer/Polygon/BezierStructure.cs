@@ -103,7 +103,7 @@
         {
             Drawer.DrawBezierCurve(g, V0, V1, V2, V3);
 
-            for (int i = 0; i < Points.Length; i+=2)
+            for (int i = 0; i < Points.Length; i += 2)
             {
                 drawLineAction(g, Points[i].X, Points[i].Y, Points[(i + 1) % Points.Length].X, Points[(i + 1) % Points.Length].Y, null);
             }
@@ -168,7 +168,12 @@
             int finalX = (int)Math.Round(rotatedX + reference.X);
             int finalY = (int)Math.Round(rotatedY + reference.Y);
 
-            point.MoveLocationIndependent(finalX - point.X, finalY - point.Y);
+
+            if ((reference == V0 && point == V1) || (reference == V3 && point == V2))
+                point.MoveLocation(finalX - point.X, finalY - point.Y);
+
+            else
+                point.MoveLocationIndependent(finalX - point.X, finalY - point.Y);
         }
     }
 }
