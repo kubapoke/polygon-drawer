@@ -106,6 +106,17 @@ namespace PolygonDrawer
 
                 return true;
             }
+            else if (keyData == (Keys.Control | Keys.B))
+            {
+                if (!CreatingNewPolygon && Polygon != null)
+                {
+                    Polygon.ChangeStateOfAllLines(Line.LineState.Bezier);
+                }
+
+                redrawPolygon();
+
+                return true;
+            }
             return base.ProcessCmdKey(ref msg, keyData);
         }
 

@@ -172,12 +172,12 @@
 
             if ((reference == V0 && point == V1) || (reference == V3 && point == V2))
             {
-                if (reference == V0 && V0.L1 != null && V0.L2 != null && V0 != originPoint)
+                if (reference == V0 && V0.L1 != null && V0.L2 != null && V0 != originPoint && V1 != originPoint)
                 {
                     Point VM = V0.L1.P1 == V1 ? V0.L2.P2 : V0.L1.P1;
                     VM.MoveLocation(0, 0, originPoint, V0);
                 }
-                else if (reference == V3 && V3.L1 != null && V3.L2 != null && V3 != originPoint)
+                else if (reference == V3 && V3.L1 != null && V3.L2 != null && V3 != originPoint && V2 != originPoint)
                 {
                     Point VM = V3.L1.P1 == V2 ? V3.L2.P2 : V3.L1.P1;
                     VM.MoveLocation(0, 0, originPoint, V3);

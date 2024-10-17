@@ -122,6 +122,15 @@
             Lines.Insert(l + 1, newLine);
 
             newLine.ChangeState(Line.LineState.None);
+
+            if (Points[l + 1].L1 != null && Points[l + 1].L1.P1.PassesLengthState && Points[l + 1].L1.P1.L1 != null)
+            {
+                Point.AdjustRotationWithLength(Points[l + 1], Points[l + 1].L1.P1, Points[l + 1].L1.P1.L1.P1);
+            }
+            if (Points[l + 1].L2 != null && Points[l + 1].L2.P2.PassesLengthState && Points[l + 1].L2.P2.L2 != null)
+            {
+                Point.AdjustRotationWithLength(Points[l + 1], Points[l + 1].L2.P2, Points[l + 1].L2.P2.L2.P2);
+            }
         }
 
         public void AddPoint(Line l, Point suggestedPoint)
