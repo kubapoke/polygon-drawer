@@ -183,6 +183,22 @@
             {
                 var rectangle = new Rectangle(point.X - Eps, point.Y - Eps, 2 * Eps, 2 * Eps);
                 g.FillEllipse(new SolidBrush(Color.Black), rectangle);
+
+                if (captions)
+                {
+                    switch (point.State)
+                    {
+                        case Point.PointState.G0Continuous:
+                            Drawer.DrawTextNextToPoint(g, point, "G0");
+                            break;
+                        case Point.PointState.G1Continuous:
+                            Drawer.DrawTextNextToPoint(g, point, "G1");
+                            break;
+                        case Point.PointState.C1Continuous:
+                            Drawer.DrawTextNextToPoint(g, point, "C1");
+                            break;
+                    }
+                }
             }
 
             foreach (var line in Lines)

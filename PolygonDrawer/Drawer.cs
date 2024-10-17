@@ -207,6 +207,19 @@
             g.DrawString(text, font, brush, new PointF(textX, textY));
         }
 
+        public static void DrawTextNextToPoint(Graphics g, Point p, string text, Color? color = null)
+        {
+            Color textColor = color ?? Color.Blue;
+
+            using Brush brush = new SolidBrush(textColor);
+            using Font font = new Font("Arial", 12);
+
+            const int offsetX = 8;
+            const int offsetY = -15;
+
+            g.DrawString(text, font, brush, new PointF(p.X + offsetX, p.Y + offsetY));
+        }
+
         public struct DoublePoint
         {
             public double X { get; set; }

@@ -319,6 +319,8 @@ namespace PolygonDrawer
                     InspectedLine.ChangeState(Line.LineState.ForcedLength);
                     InspectedLine.SetWantedLength((double)inputForm.Result);
 
+
+
                     redrawPolygon();
                 }
             }

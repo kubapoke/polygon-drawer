@@ -163,6 +163,17 @@
 
             P1.MoveLocation(-P1.X + midX - offsetX, -P1.Y + midY - offsetY, P2);
             P2.MoveLocation(-P2.X + midX + offsetX, -P2.Y + midY + offsetY, P1);
+
+            if (P1.PassesLengthState && P1.L1 != null && P1.L1.P1.State == Point.PointState.Bezier)
+            {
+                P1.L1.WantedLength = Length;
+                P1.MoveLocation(0, 0);
+            }
+            if (P2.PassesLengthState && P2.L2 != null && P2.L2.P2.State == Point.PointState.Bezier)
+            {
+                P2.L2.WantedLength = Length;
+                P2.MoveLocation(0, 0);
+            }
         }
     }
 }
