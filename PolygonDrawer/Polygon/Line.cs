@@ -18,7 +18,7 @@
                 return Math.Sqrt(dx * dx + dy * dy);
             }
         }
-        public double WantedLength { get; private set; } = 0;
+        public double WantedLength { get; set; } = 0;
         public BezierStructure? BezierStructure { get; private set; }
 
         public enum LineState

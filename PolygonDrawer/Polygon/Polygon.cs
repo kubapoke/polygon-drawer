@@ -78,6 +78,9 @@
 
             Points.RemoveAt(v);
             Lines.RemoveAt(v);
+
+            Points[v % N].MoveLocation(0, 0);
+            Points[(v - 1 + N) % N].MoveLocation(0, 0);
         }
 
         public void DeletePoint(Point p)
@@ -122,7 +125,6 @@
             Lines.Insert(l + 1, newLine);
 
             newLine.ChangeState(Line.LineState.None);
-
             Points[l + 1].MoveLocation(0, 0);
         }
 

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Eventing.Reader;
-
-namespace PolygonDrawer
+﻿namespace PolygonDrawer
 {
     internal class Point
     {
@@ -111,6 +109,22 @@ namespace PolygonDrawer
             return (newX - P2.X, newY - P2.Y);
         }
 
+        public static (int, int) GetNewPositionAfterRotationWithFixedLength(Point P0, Point P1, Point P2, double length)
+        {
+            double dx01 = P1.X - P0.X;
+            double dy01 = P1.Y - P0.Y;
+
+            double lengthP0P1 = Math.Sqrt(dx01 * dx01 + dy01 * dy01);
+
+            double unitX = dx01 / lengthP0P1;
+            double unitY = dy01 / lengthP0P1;
+
+            int newX = (int)Math.Round(P1.X + unitX * length);
+            int newY = (int)Math.Round(P1.Y + unitY * length);
+
+            return (newX - P2.X, newY - P2.Y);
+        }
+
 
         public void MoveLocation(int dx, int dy, Point? originPoint = null, Point? prevPoint = null)
         {
@@ -137,28 +151,28 @@ namespace PolygonDrawer
             if (PassesOrientationState)
             {
                 (int x, int y) howToMove = (0, 0);
-                if(State == PointState.G1Continuous)
+                if (State == PointState.G1Continuous)
                 {
-                    if(L1 != null && L1.P1 == prevPoint && L2!= null)
+                    if (L1 != null && L1.P1 == prevPoint && L2 != null)
                     {
-                        howToMove = GetNewPositionAfterRotation(L1.P1, this, L2.P2);
+                        howToMove = L2.State != Line.LineState.ForcedLength ? GetNewPositionAfterRotation(L1.P1, this, L2.P2) : GetNewPositionAfterRotationWithFixedLength(L1.P1, this, L2.P2, L2.WantedLength);
                         L2.P2.MoveLocation(howToMove.x, howToMove.y, originPoint, this);
                     }
-                    else if(L2 != null && L2.P2 == prevPoint && L1 != null)
+                    if (L2 != null && L2.P2 == prevPoint && L1 != null)
                     {
-                        howToMove = GetNewPositionAfterRotation(L2.P2, this, L1.P1);
+                        howToMove = L1.State != Line.LineState.ForcedLength ? GetNewPositionAfterRotation(L2.P2, this, L1.P1) : GetNewPositionAfterRotationWithFixedLength(L2.P2, this, L1.P1, L1.WantedLength);
                         L1.P1.MoveLocation(howToMove.x, howToMove.y, originPoint, this);
                     }
-                    else if (L1 != null && L2!= null)
+                    else if (L1 != null && L2 != null)
                     {
                         Point P1 = L1.P1.State == PointState.Bezier ? L2.P2 : L1.P1;
                         Point P2 = L1.P1.State == PointState.Bezier ? L1.P1 : L2.P2;
 
-                        howToMove = GetNewPositionAfterRotation(P1, this, P2);
+                        howToMove = P2.L1!.State != Line.LineState.ForcedLength ? GetNewPositionAfterRotation(P1, this, P2) : GetNewPositionAfterRotationWithFixedLength(P1, this, P2, P2.L1.WantedLength);
                         P2.MoveLocation(howToMove.x, howToMove.y, originPoint, this);
                     }
                 }
-                else if(State == PointState.C1Continuous)
+                else if (State == PointState.C1Continuous)
                 {
                     if (L1 != null && L1.P1 == prevPoint && L2 != null)
                     {
@@ -258,6 +272,51 @@ namespace PolygonDrawer
         public void ChangeState(PointState state)
         {
             State = state;
+
+            switch (state)
+            {
+                case PointState.G0Continuous:
+                    if (L1 != null && L1.P1.State == PointState.Bezier)
+                    {
+                        L1.ChangeState(Line.LineState.None);
+                    }
+                    if (L2 != null && L2.P2.State == PointState.Bezier)
+                    {
+                        L2.ChangeState(Line.LineState.None);
+                    }
+                    break;
+                case PointState.G1Continuous:
+                    if (L1 != null && L1.P1.State == PointState.Bezier && L1.State == Line.LineState.ForcedLength)
+                    {
+                        L1.ChangeState(Line.LineState.None);
+                    }
+                    if (L2 != null && L2.P2.State == PointState.Bezier && L2.State == Line.LineState.ForcedLength)
+                    {
+                        L2.ChangeState(Line.LineState.None);
+                    }
+                    if (L1 != null && L2 != null && L1.P1.State == PointState.Bezier && (L2.State == Line.LineState.Horizontal || L2.State == Line.LineState.Vertical))
+                    {
+                        L1.ChangeState(L2.State);
+                    }
+                    if (L2 != null && L1 != null && L2.P2.State == PointState.Bezier && (L1.State == Line.LineState.Horizontal || L1.State == Line.LineState.Vertical))
+                    {
+                        L2.ChangeState(L1.State);
+                    }
+                    break;
+                case PointState.C1Continuous:
+                    if (L1 != null && L2 != null && L1.P1.State == PointState.Bezier && L2.State != Line.LineState.Bezier && L2.State != Line.LineState.None)
+                    {
+                        L1.ChangeState(L2.State);
+                        L1.WantedLength = L2.WantedLength;
+                    }
+                    if (L2 != null && L1 != null && L2.P2.State == PointState.Bezier && L1.State != Line.LineState.Bezier && L1.State != Line.LineState.None)
+                    {
+                        L2.ChangeState(L1.State);
+                        L2.WantedLength = L1.WantedLength;
+                    }
+                    break;
+            }
+
             MoveLocation(0, 0);
         }
     }
