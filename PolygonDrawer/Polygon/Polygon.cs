@@ -70,11 +70,11 @@
 
         public void DeletePoint(int v)
         {
-            Lines[(v - 1 + N) % N].P2 = Points[(v + 1) % N];
-            Points[(v + 1) % N].L1 = Lines[(v - 1 + N) % N];
-
             Lines[(v - 1 + N) % N].ChangeState(Line.LineState.None);
             Lines[v].ChangeState(Line.LineState.None);
+
+            Lines[(v - 1 + N) % N].P2 = Points[(v + 1) % N];
+            Points[(v + 1) % N].L1 = Lines[(v - 1 + N) % N];
 
             Points.RemoveAt(v);
             Lines.RemoveAt(v);
