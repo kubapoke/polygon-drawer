@@ -82,28 +82,64 @@
                 if (!P2.ControlsContinuity) P2.ChangeState(Point.PointState.None);
             }
 
-            switch (newState)
+            bool notBezierLine = P1.State != Point.PointState.Bezier && P2.State != Point.PointState.Bezier;
+
+            if (notBezierLine)
             {
-                case LineState.Vertical:
-                    int avgX = (P1.X + P2.X) / 2;
-                    P1.MoveLocation(avgX - P1.X, 0, P2);
-                    P2.MoveLocation(avgX - P2.X, 0, P1);
-                    break;
-                case LineState.Horizontal:
-                    int avgY = (P1.Y + P2.Y) / 2;
-                    P1.MoveLocation(0, avgY - P1.Y, P2);
-                    P2.MoveLocation(0, avgY - P2.Y, P1);
-                    break;
-                case LineState.ForcedLength:
-                    WantedLength = Length;
-                    break;
-                case LineState.Bezier:
-                    BezierStructure = new BezierStructure(this);
-                    if (P1.State == Point.PointState.None)
-                        P1.ChangeState(Point.PointState.C1Continuous);
-                    if (P2.State == Point.PointState.None)
-                        P2.ChangeState(Point.PointState.C1Continuous);
-                    break;
+                switch (newState)
+                {
+                    case LineState.None:
+                        if (P1.L1 != null && P1.L1.P1.State == Point.PointState.Bezier)
+                            P1.L1.ChangeState(LineState.None);
+                        if (P2.L2 != null && P2.L2.P2.State == Point.PointState.Bezier)
+                            P2.L2.ChangeState(LineState.None);
+                        break;
+                    case LineState.Vertical:
+                        int avgX = (P1.X + P2.X) / 2;
+                        P1.MoveLocation(avgX - P1.X, 0, P2);
+                        P2.MoveLocation(avgX - P2.X, 0, P1);
+
+                        if (P1.PassesOrientationState && P1.L1 != null && P1.L1.P1.State == Point.PointState.Bezier)
+                            P1.L1.ChangeState(LineState.Vertical);
+                        if (P2.PassesOrientationState && P2.L2 != null && P2.L2.P2.State == Point.PointState.Bezier)
+                            P2.L2.ChangeState(LineState.Vertical);
+                        break;
+                    case LineState.Horizontal:
+                        int avgY = (P1.Y + P2.Y) / 2;
+                        P1.MoveLocation(0, avgY - P1.Y, P2);
+                        P2.MoveLocation(0, avgY - P2.Y, P1);
+
+                        if (P1.PassesOrientationState && P1.L1 != null && P1.L1.P1.State == Point.PointState.Bezier)
+                            P1.L1.ChangeState(LineState.Horizontal);
+                        if (P2.PassesOrientationState && P2.L2 != null && P2.L2.P2.State == Point.PointState.Bezier)
+                            P2.L2.ChangeState(LineState.Horizontal);
+                        break;
+                    case LineState.ForcedLength:
+                        WantedLength = Length;
+
+                        if (P1.PassesLengthState && P1.L1 != null && P1.L1.P1.State == Point.PointState.Bezier)
+                        {
+                            P1.L1.ChangeState(LineState.ForcedLength);
+                            P1.L1.WantedLength = Length;
+                        }
+                        if (P2.PassesLengthState && P2.L2 != null && P2.L2.P2.State == Point.PointState.Bezier)
+                        {
+                            P2.L2.ChangeState(LineState.ForcedLength);
+                            P2.L2.WantedLength = Length;
+                        }
+                        break;
+                    case LineState.Bezier:
+                        BezierStructure = new BezierStructure(this);
+                        if (P1.State == Point.PointState.None)
+                            P1.ChangeState(Point.PointState.C1Continuous);
+                        if (P2.State == Point.PointState.None)
+                            P2.ChangeState(Point.PointState.C1Continuous);
+                        if (P1.L1 != null && P1.L1.State != LineState.None && P1.L1.State != LineState.Bezier)
+                            P1.L1.ChangeState(P1.L1.State);
+                        if (P2.L2 != null && P2.L2.State != LineState.None && P2.L2.State != LineState.Bezier)
+                            P2.L2.ChangeState(P2.L2.State);
+                        break;
+                }
             }
         }
 

@@ -120,6 +120,8 @@
             Lines[l].ChangeState(Line.LineState.None);
             Points.Insert(l + 1, suggestedPoint);
             Lines.Insert(l + 1, newLine);
+
+            newLine.ChangeState(Line.LineState.None);
         }
 
         public void AddPoint(Line l, Point suggestedPoint)

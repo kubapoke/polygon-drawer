@@ -131,7 +131,7 @@
             return minX <= x && minY <= y && maxX >= x && maxY >= y;
         }
 
-        public void AdjustCurvePoints(Point V, int dx, int dy)
+        public void AdjustCurvePoints(Point V, int dx, int dy, Point originPoint)
         {
             bool movedV0 = V == V0;
             Point stationary = movedV0 ? V3 : V0;
@@ -150,11 +150,11 @@
             double newAngle = Math.Atan2(newDy, newDx);
             double rotation = newAngle - originalAngle;
 
-            MovePoint(V1, stationary, scale, rotation);
-            MovePoint(V2, stationary, scale, rotation);
+            MovePoint(V1, stationary, scale, rotation, originPoint);
+            MovePoint(V2, stationary, scale, rotation, originPoint);
         }
 
-        private void MovePoint(Point point, Point reference, double scale, double rotation)
+        private void MovePoint(Point point, Point reference, double scale, double rotation, Point originPoint)
         {
             double translatedX = point.X - reference.X;
             double translatedY = point.Y - reference.Y;
@@ -168,12 +168,21 @@
             int finalX = (int)Math.Round(rotatedX + reference.X);
             int finalY = (int)Math.Round(rotatedY + reference.Y);
 
+            point.MoveLocationIndependent(finalX - point.X, finalY - point.Y);
 
             if ((reference == V0 && point == V1) || (reference == V3 && point == V2))
-                point.MoveLocation(finalX - point.X, finalY - point.Y);
-
-            else
-                point.MoveLocationIndependent(finalX - point.X, finalY - point.Y);
+            {
+                if (reference == V0 && V0.L1 != null && V0.L2 != null && V0 != originPoint)
+                {
+                    Point VM = V0.L1.P1 == V1 ? V0.L2.P2 : V0.L1.P1;
+                    VM.MoveLocation(0, 0, originPoint, V0);
+                }
+                else if (reference == V3 && V3.L1 != null && V3.L2 != null && V3 != originPoint)
+                {
+                    Point VM = V3.L1.P1 == V2 ? V3.L2.P2 : V3.L1.P1;
+                    VM.MoveLocation(0, 0, originPoint, V3);
+                }
+            }
         }
     }
 }
