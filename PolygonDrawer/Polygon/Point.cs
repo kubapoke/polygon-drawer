@@ -129,7 +129,7 @@
             if (this == originPoint && prevPoint != null)
                 return;
 
-            if (this.ControlsContinuity && Math.Max(dx, dy) > 0)
+            if (this.ControlsContinuity && (dx != 0 || dy != 0))
             {
                 if (L1 != null && L1.P1.State == PointState.Bezier && L1.P1 != prevPoint && L1.P1.BezierStructure != null)
                 {
@@ -150,22 +150,34 @@
                 {
                     if (L1 != null && L1.P1 == prevPoint && prevPoint.L1 != null)
                     {
-                        AdjustRotation(prevPoint.L1.P1, prevPoint, this);
+                        if (this.State == PointState.Bezier && prevPoint.L1.P1 != originPoint)
+                            AdjustRotation(this, prevPoint, prevPoint.L1.P1);
+                        else
+                            AdjustRotation(prevPoint.L1.P1, prevPoint, this);
                     }
                     else if (L2 != null && L2.P2 == prevPoint && prevPoint.L2 != null)
                     {
-                        AdjustRotation(prevPoint.L2.P2, prevPoint, this);
+                        if (this.State == PointState.Bezier && prevPoint.L2.P2 != originPoint)
+                            AdjustRotation(this, prevPoint, prevPoint.L2.P2);
+                        else
+                            AdjustRotation(prevPoint.L2.P2, prevPoint, this);
                     }
                 }
                 else if (prevPoint.State == PointState.C1Continuous)
                 {
                     if (L1 != null && L1.P1 == prevPoint && prevPoint.L1 != null)
                     {
-                        AdjustRotationWithLength(prevPoint.L1.P1, prevPoint, this);
+                        if (this.State == PointState.Bezier && prevPoint.L1.P1 != originPoint)
+                            AdjustRotationWithLength(this, prevPoint, prevPoint.L1.P1);
+                        else
+                            AdjustRotationWithLength(prevPoint.L1.P1, prevPoint, this);
                     }
                     else if (L2 != null && L2.P2 == prevPoint && prevPoint.L2 != null)
                     {
-                        AdjustRotationWithLength(prevPoint.L2.P2, prevPoint, this);
+                        if (this.State == PointState.Bezier && prevPoint.L2.P2 != originPoint)
+                            AdjustRotationWithLength(this, prevPoint, prevPoint.L2.P2);
+                        else
+                            AdjustRotationWithLength(prevPoint.L2.P2, prevPoint, this);
                     }
                 }
             }
