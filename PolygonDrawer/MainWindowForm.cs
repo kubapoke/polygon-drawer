@@ -184,7 +184,7 @@ namespace PolygonDrawer
             {
                 int xMove = e.X - PrevMouseX, yMove = e.Y - PrevMouseY;
 
-                MovedPoint.MoveLocation(xMove, yMove);
+                MovedPoint.MoveLocation(e.X - MovedPoint.X, e.Y - MovedPoint.Y);
             }
 
             redrawPolygon();
