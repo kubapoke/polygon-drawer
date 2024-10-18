@@ -80,9 +80,6 @@
                 P1.L2 = P2.L1 = this;
                 if (!P1.ControlsContinuity) P1.ChangeState(Point.PointState.None);
                 if (!P2.ControlsContinuity) P2.ChangeState(Point.PointState.None);
-
-                P1.ChangeState(P1.State);
-                P2.ChangeState(P2.State);
             }
 
             bool notBezierLine = P1.State != Point.PointState.Bezier && P2.State != Point.PointState.Bezier;
@@ -143,6 +140,9 @@
                             P2.L2.ChangeState(P2.L2.State);
                         break;
                 }
+
+                P1.MoveLocation(0, 0);
+                P2.MoveLocation(0, 0);
             }
         }
 

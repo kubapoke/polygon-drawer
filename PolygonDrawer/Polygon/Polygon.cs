@@ -155,16 +155,16 @@
             foreach (var point in Points)
             {
                 if (point.InBounds(x, y)) return point;
+            }
 
-                foreach (var line in Lines)
+            foreach (var line in Lines)
+            {
+                if (line.State == Line.LineState.Bezier && line.BezierStructure != null)
                 {
-                    if (line.State == Line.LineState.Bezier && line.BezierStructure != null)
-                    {
-                        if (line.BezierStructure.V1.InBounds(x, y))
-                            return line.BezierStructure.V1;
-                        else if (line.BezierStructure.V2.InBounds(x, y))
-                            return line.BezierStructure.V2;
-                    }
+                    if (line.BezierStructure.V1.InBounds(x, y))
+                        return line.BezierStructure.V1;
+                    else if (line.BezierStructure.V2.InBounds(x, y))
+                        return line.BezierStructure.V2;
                 }
             }
 
