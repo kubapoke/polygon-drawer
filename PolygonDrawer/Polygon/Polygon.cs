@@ -152,11 +152,6 @@
 
         public Point? GetPointAtLocation(int x, int y)
         {
-            foreach (var point in Points)
-            {
-                if (point.InBounds(x, y)) return point;
-            }
-
             foreach (var line in Lines)
             {
                 if (line.State == Line.LineState.Bezier && line.BezierStructure != null)
@@ -166,6 +161,11 @@
                     else if (line.BezierStructure.V2.InBounds(x, y))
                         return line.BezierStructure.V2;
                 }
+            }
+
+            foreach (var point in Points)
+            {
+                if (point.InBounds(x, y)) return point;
             }
 
             return null;

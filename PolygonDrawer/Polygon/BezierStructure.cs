@@ -133,6 +133,9 @@
 
         public void AdjustCurvePoints(Point V, int dx, int dy, Point originPoint)
         {
+            if (V0.X == V3.X && V0.Y == V3.Y)
+                return;
+
             bool movedV0 = V == V0;
             Point stationary = movedV0 ? V3 : V0;
             Point moved = V;
