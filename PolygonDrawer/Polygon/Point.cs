@@ -129,11 +129,15 @@
         {
             double lengthP1P2 = Math.Sqrt(Math.Pow(P2.X - P1.X, 2) + Math.Pow(P2.Y - P1.Y, 2));
 
+            if (P0.X == P1.X && P0.Y == P1.Y)
+                return (0, 0);
+
             int newX = (int)Math.Round(P1.X + Math.Sign(P1.X - P0.X) * Math.Abs(lengthP1P2));
             int newY = P1.Y;
 
             return (newX - P2.X, newY - P2.Y);
         }
+
 
         public static (int, int) GetNewPositionAfterRotationHorizontalP0P1(Point P0, Point P1, Point P2)
         {
@@ -148,6 +152,9 @@
         public static (int, int) GetNewPositionAfterRotationVerticalKeepLength(Point P0, Point P1, Point P2)
         {
             double lengthP1P2 = Math.Sqrt(Math.Pow(P2.X - P1.X, 2) + Math.Pow(P2.Y - P1.Y, 2));
+
+            if (P0.X == P1.X && P0.Y == P1.Y)
+                return (0, 0);
 
             int newX = P1.X;
             int newY = (int)Math.Round(P1.Y + Math.Sign(P1.Y - P0.Y) * Math.Abs(lengthP1P2));
