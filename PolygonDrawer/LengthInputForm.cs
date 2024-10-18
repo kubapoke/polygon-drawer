@@ -14,14 +14,14 @@
         {
             if (keyData == Keys.Enter)
             {
-                if (double.TryParse(lengthTextBox.Text, out double value))
+                if (double.TryParse(lengthTextBox.Text, out double value) && value >= 1 && value <= 1000)
                 {
                     Result = value;
                     DialogResult = DialogResult.OK;
                 }
                 else
                 {
-                    MessageBox.Show("Please enter a valid number.");
+                    MessageBox.Show("Please enter a valid number between 1 and 1000.");
                 }
             }
             else if (keyData == Keys.Escape)
