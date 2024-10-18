@@ -175,10 +175,12 @@
                 if (reference == V0 && V0.L1 != null && V0.L2 != null && V0 != originPoint && V1 != originPoint)
                 {
                     V0.MoveLocation(0, 0, originPoint, V1);
+                    V0.MoveLocation(0, 0, V2, V0.L1.P1);
                 }
                 else if (reference == V3 && V3.L1 != null && V3.L2 != null && V3 != originPoint && V2 != originPoint)
                 {
                     V3.MoveLocation(0, 0, originPoint, V2);
+                    V3.MoveLocation(0, 0, V1, V3.L2.P2);
                 }
             }
         }
