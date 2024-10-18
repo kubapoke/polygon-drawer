@@ -109,6 +109,11 @@
             double unitX = dx01 / lengthP0P1;
             double unitY = dy01 / lengthP0P1;
 
+            if (P0.State == PointState.Bezier && P2.State != PointState.Bezier)
+                lengthP0P1 *= 3.0;
+            else if (P0.State != PointState.Bezier && P2.State == PointState.Bezier)
+                lengthP0P1 /= 3.0;
+
             int newX = (int)Math.Round(P1.X + unitX * lengthP0P1);
             int newY = (int)Math.Round(P1.Y + unitY * lengthP0P1);
 
@@ -149,6 +154,11 @@
         {
             double lengthP0P1 = Math.Sqrt(Math.Pow(P1.X - P0.X, 2) + Math.Pow(P1.Y - P0.Y, 2));
 
+            if (P0.State == PointState.Bezier && P2.State != PointState.Bezier)
+                lengthP0P1 *= 3.0;
+            else if (P0.State != PointState.Bezier && P2.State == PointState.Bezier)
+                lengthP0P1 /= 3.0;
+
             int newX = (int)Math.Round(P1.X + Math.Sign(P1.X - P0.X) * Math.Abs(lengthP0P1));
             int newY = P1.Y;
 
@@ -171,6 +181,11 @@
         public static (int, int) GetNewPositionAfterRotationVerticalP0P1(Point P0, Point P1, Point P2)
         {
             double lengthP0P1 = Math.Sqrt(Math.Pow(P1.X - P0.X, 2) + Math.Pow(P1.Y - P0.Y, 2));
+
+            if (P0.State == PointState.Bezier && P2.State != PointState.Bezier)
+                lengthP0P1 *= 3.0;
+            else if (P0.State != PointState.Bezier && P2.State == PointState.Bezier)
+                lengthP0P1 /= 3.0;
 
             int newX = P1.X;
             int newY = (int)Math.Round(P1.Y + Math.Sign(P1.Y - P0.Y) * Math.Abs(lengthP0P1));
@@ -387,12 +402,12 @@
                     if (L1 != null && L2 != null && L1.P1.State == PointState.Bezier && L2.State != Line.LineState.Bezier && L2.State != Line.LineState.None)
                     {
                         L1.ChangeState(L2.State);
-                        L1.WantedLength = L2.WantedLength;
+                        L1.WantedLength = L2.WantedLength / 3;
                     }
                     if (L2 != null && L1 != null && L2.P2.State == PointState.Bezier && L1.State != Line.LineState.Bezier && L1.State != Line.LineState.None)
                     {
                         L2.ChangeState(L1.State);
-                        L2.WantedLength = L1.WantedLength;
+                        L2.WantedLength = L1.WantedLength / 3;
                     }
                     break;
             }
