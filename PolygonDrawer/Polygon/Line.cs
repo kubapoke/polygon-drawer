@@ -127,6 +127,18 @@
                             P2.L2.ChangeState(LineState.ForcedLength);
                             P2.L2.WantedLength = Length;
                         }
+                        if (!P1.PassesLengthState && P1.PassesOrientationState && P1.L1 != null && P1.L1.P1.State == Point.PointState.Bezier && (P1.L1.State == LineState.Horizontal || P1.L1.State == LineState.Vertical))
+                        {
+                            P1.L1.ChangeState(LineState.None);
+                            P1.L1.WantedLength = Length;
+                        }
+                        if (!P2.PassesLengthState && P2.PassesOrientationState && P2.L2 != null && P2.L2.P2.State == Point.PointState.Bezier && (P2.L2.State == LineState.Horizontal || P2.L2.State == LineState.Vertical))
+                        {
+                            P2.L2.ChangeState(LineState.None);
+                            P2.L2.WantedLength = Length;
+                        }
+
+
                         break;
                     case LineState.Bezier:
                         BezierStructure = new BezierStructure(this);
