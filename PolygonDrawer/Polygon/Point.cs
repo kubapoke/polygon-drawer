@@ -77,6 +77,9 @@
 
         public static (int, int) GetNewPositionAfterRotation(Point P0, Point P1, Point P2)
         {
+            if ((P0.X == P1.X && P0.Y == P1.Y) || (P0.X == P2.X && P0.Y == P2.Y) || (P1.X == P2.X && P1.Y == P2.Y))
+                return (0, 0);
+
             double dx01 = P1.X - P0.X;
             double dy01 = P1.Y - P0.Y;
 
@@ -95,6 +98,9 @@
 
         public static (int, int) GetNewPositionAfterRotationWithLength(Point P0, Point P1, Point P2)
         {
+            if ((P0.X == P1.X && P0.Y == P1.Y) || (P0.X == P2.X && P0.Y == P2.Y) || (P1.X == P2.X && P1.Y == P2.Y))
+                return (0, 0);
+
             double dx01 = P1.X - P0.X;
             double dy01 = P1.Y - P0.Y;
 
