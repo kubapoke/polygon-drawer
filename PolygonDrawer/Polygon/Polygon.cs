@@ -171,6 +171,16 @@
             return null;
         }
 
+        public Point? GetRealPointAtLocation(int x, int y)
+        {
+            foreach (var point in Points)
+            {
+                if (point.InBounds(x, y)) return point;
+            }
+
+            return null;
+        }
+
         public Line? GetLineAtLocation(int x, int y)
         {
             return Lines.Find(l => l.InBounds(x, y)) ?? Lines.Find(l => l.State == Line.LineState.Bezier && l.BezierStructure != null && l.BezierStructure.InBounds(x, y));

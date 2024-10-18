@@ -150,7 +150,7 @@ namespace PolygonDrawer
             {
                 if (!CreatingNewPolygon && Polygon != null)
                 {
-                    InspectedPoint = Polygon.GetPointAtLocation(e.X, e.Y);
+                    InspectedPoint = Polygon.GetRealPointAtLocation(e.X, e.Y);
 
                     if (InspectedPoint != null)
                     {
