@@ -135,8 +135,6 @@
                         {
                             P2.L2.ChangeState(LineState.None);
                         }
-
-
                         break;
                     case LineState.Bezier:
                         BezierStructure = new BezierStructure(this);
@@ -144,6 +142,10 @@
                             P1.ChangeState(Point.PointState.C1Continuous);
                         if (P2.State == Point.PointState.None)
                             P2.ChangeState(Point.PointState.C1Continuous);
+                        if (P1.L1 != null && P1.L1.P1.State == Point.PointState.Bezier)
+                            P1.L1.ChangeState(LineState.None);
+                        if (P2.L2 != null && P2.L2.P2.State == Point.PointState.Bezier)
+                            P2.L2.ChangeState(LineState.None);
                         if (P1.L1 != null && P1.L1.State != LineState.None && P1.L1.State != LineState.Bezier)
                             P1.L1.ChangeState(P1.L1.State);
                         if (P2.L2 != null && P2.L2.State != LineState.None && P2.L2.State != LineState.Bezier)
