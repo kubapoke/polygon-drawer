@@ -2,85 +2,88 @@
 {
     internal class BezierStructure
     {
-        private Point[] Points = new Point[4];
-        private Line[] Lines = new Line[3];
+        private Point[] V = new Point[4];
+        private Line[] L = new Line[3];
 
         public Point V0
         {
             get
             {
-                return Points[0];
+                return V[0];
             }
 
-            private set { Points[0] = value; }
+            private set { V[0] = value; }
         }
 
         public Point V1
         {
             get
             {
-                return Points[1];
+                return V[1];
             }
 
-            private set { Points[1] = value; }
+            private set { V[1] = value; }
         }
 
         public Point V2
         {
             get
             {
-                return Points[2];
+                return V[2];
             }
 
-            private set { Points[2] = value; }
+            private set { V[2] = value; }
         }
 
         public Point V3
         {
             get
             {
-                return Points[3];
+                return V[3];
             }
 
-            private set { Points[3] = value; }
+            private set { V[3] = value; }
         }
         public Line L0
         {
             get
             {
-                return Lines[0];
+                return L[0];
             }
 
-            private set { Lines[0] = value; }
+            private set { L[0] = value; }
         }
 
         public Line L1
         {
             get
             {
-                return Lines[1];
+                return L[1];
             }
 
-            private set { Lines[1] = value; }
+            private set { L[1] = value; }
         }
 
         public Line L2
         {
             get
             {
-                return Lines[2];
+                return L[2];
             }
 
-            private set { Lines[2] = value; }
+            private set { L[2] = value; }
         }
 
 
-        public BezierStructure(Line line)
+        public BezierStructure(Line? line)
         {
+            if (line == null)
+                return;
+
             V0 = line.P1;
             V3 = line.P2;
 
-            Line prevLine = line.P1.L1!, nextLine = line.P2.L2!;
+            Line prevLine = line.P1.L1, nextLine = line.P2.L2;
 
             V1 = new Point(2 * line.P1.X - prevLine.P1.X, 2 * line.P1.Y - prevLine.P1.Y);
             V2 = new Point(2 * line.P2.X - nextLine.P2.X, 2 * line.P2.Y - nextLine.P2.Y);
@@ -103,14 +106,14 @@
         {
             Drawer.DrawBezierCurve(g, V0, V1, V2, V3);
 
-            for (int i = 0; i < Points.Length; i += 2)
+            for (int i = 0; i < V.Length; i += 2)
             {
-                drawLineAction(g, Points[i].X, Points[i].Y, Points[(i + 1) % Points.Length].X, Points[(i + 1) % Points.Length].Y, null);
+                drawLineAction(g, V[i].X, V[i].Y, V[(i + 1) % V.Length].X, V[(i + 1) % V.Length].Y, null);
             }
 
             System.Drawing.Brush brush = new System.Drawing.SolidBrush(System.Drawing.Color.Gray);
-            System.Drawing.Rectangle r1 = new System.Drawing.Rectangle(Points[1].X - Polygon.Eps, Points[1].Y - Polygon.Eps, 2 * Polygon.Eps, 2 * Polygon.Eps);
-            System.Drawing.Rectangle r2 = new System.Drawing.Rectangle(Points[2].X - Polygon.Eps, Points[2].Y - Polygon.Eps, 2 * Polygon.Eps, 2 * Polygon.Eps);
+            System.Drawing.Rectangle r1 = new System.Drawing.Rectangle(V[1].X - Polygon.Eps, V[1].Y - Polygon.Eps, 2 * Polygon.Eps, 2 * Polygon.Eps);
+            System.Drawing.Rectangle r2 = new System.Drawing.Rectangle(V[2].X - Polygon.Eps, V[2].Y - Polygon.Eps, 2 * Polygon.Eps, 2 * Polygon.Eps);
 
             g.FillEllipse(brush, r1);
             g.FillEllipse(brush, r2);
@@ -120,7 +123,7 @@
         {
             int minX = int.MaxValue, maxX = int.MinValue, minY = int.MaxValue, maxY = int.MinValue;
 
-            foreach (var point in Points)
+            foreach (var point in V)
             {
                 minX = Math.Min(minX, point.X - Polygon.Eps);
                 minY = Math.Min(minY, point.Y - Polygon.Eps);
@@ -131,14 +134,14 @@
             return minX <= x && minY <= y && maxX >= x && maxY >= y;
         }
 
-        public void AdjustCurvePoints(Point V, int dx, int dy, Point originPoint)
+        public void AdjustCurvePoints(Point movedPoint, int dx, int dy, Point originPoint)
         {
             if (V0.X == V3.X && V0.Y == V3.Y)
                 return;
 
-            bool movedV0 = V == V0;
+            bool movedV0 = movedPoint == V0;
             Point stationary = movedV0 ? V3 : V0;
-            Point moved = V;
+            Point moved = movedPoint;
 
             double originalDx = moved.X - stationary.X;
             double originalDy = moved.Y - stationary.Y;
@@ -175,12 +178,12 @@
 
             if ((reference == V0 && point == V1) || (reference == V3 && point == V2))
             {
-                if (reference == V0 && V0.L1 != null && V0.L2 != null && V0 != originPoint && V1 != originPoint)
+                if (reference == V0 && V0 != originPoint && V1 != originPoint)
                 {
                     V0.MoveLocation(0, 0, originPoint, V1);
                     V0.MoveLocation(0, 0, V2, V0.L1.P1);
                 }
-                else if (reference == V3 && V3.L1 != null && V3.L2 != null && V3 != originPoint && V2 != originPoint)
+                else if (reference == V3 && V3 != originPoint && V2 != originPoint)
                 {
                     V3.MoveLocation(0, 0, originPoint, V2);
                     V3.MoveLocation(0, 0, V1, V3.L2.P2);

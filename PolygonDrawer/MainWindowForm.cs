@@ -51,13 +51,13 @@ namespace PolygonDrawer
                 bool hasHorizontalNeighbors = false;
                 bool isBezierLine = false;
 
-                if (InspectedLine.P1.L1 != null && InspectedLine.P1.L1.State == Line.LineState.Vertical)
+                if (InspectedLine.P1.L1.State == Line.LineState.Vertical)
                     hasVerticalNeighbors = true;
-                if (InspectedLine.P2.L2 != null && InspectedLine.P2.L2.State == Line.LineState.Vertical)
+                if (InspectedLine.P2.L2.State == Line.LineState.Vertical)
                     hasVerticalNeighbors = true;
-                if (InspectedLine.P1.L1 != null && InspectedLine.P1.L1.State == Line.LineState.Horizontal)
+                if (InspectedLine.P1.L1.State == Line.LineState.Horizontal)
                     hasHorizontalNeighbors = true;
-                if (InspectedLine.P2.L2 != null && InspectedLine.P2.L2.State == Line.LineState.Horizontal)
+                if (InspectedLine.P2.L2.State == Line.LineState.Horizontal)
                     hasHorizontalNeighbors = true;
                 isBezierLine = InspectedLine.State == Line.LineState.Bezier;
 
