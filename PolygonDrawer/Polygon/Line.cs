@@ -9,8 +9,29 @@
             BezierStructure = new BezierStructure(null); // placeholder bezier structure
         }
 
-        public Point P1 { get; set; }
-        public Point P2 { get; set; }
+        public Point[] P = new Point[2];
+
+        public Point P1
+        {
+            get { return P[0]; }
+            set { P[0] = value; }
+        }
+        public Point P2
+        {
+            get { return P[1]; }
+            set { P[1] = value; }
+        }
+        public Line L1
+        {
+            get { return P1.L1; }
+            set { P1.L1 = value; }
+        }
+        public Line L2
+        {
+            get { return P2.L2; }
+            set { P2.L2 = value; }
+        }
+
         public double Length
         {
             get

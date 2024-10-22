@@ -2,12 +2,6 @@
 {
     internal class Point
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public Line L1 { get; set; }
-        public Line L2 { get; set; }
-        public BezierStructure BezierStructure { get; set; }
-
         public Point(int x, int y)
         {
             X = x;
@@ -15,6 +9,32 @@
             L1 = L2 = new Line(this, this); //placeholder line
             BezierStructure = new BezierStructure(null);
         }
+
+        public int X { get; set; }
+        public int Y { get; set; }
+        public Line[] L = new Line[2];
+        public Line L1 
+        {
+            get { return L[0]; }
+            set { L[0] = value; }
+        }
+        public Line L2
+        {
+            get { return L[1]; }
+            set { L[1] = value; }
+        }
+        public Point P1
+        {
+            get { return L1.P1; }
+            set { L1.P1 = value; }
+        }
+        public Point P2
+        {
+            get { return L2.P2; }
+            set { L2.P2 = value; }
+        }
+        public BezierStructure BezierStructure { get; set; }
+       
         public bool ControlsContinuity
         {
             get
@@ -75,7 +95,7 @@
             Y = y;
         }
 
-        public static (int, int) GetNewPositionAfterRotation(Point P0, Point P1, Point P2)
+        public static (int, int) GetPositionAfterRotation(Point P0, Point P1, Point P2)
         {
             if ((P0.X == P1.X && P0.Y == P1.Y) || (P0.X == P2.X && P0.Y == P2.Y) || (P1.X == P2.X && P1.Y == P2.Y))
                 return (0, 0);
@@ -96,7 +116,7 @@
             return (newX - P2.X, newY - P2.Y);
         }
 
-        public static (int, int) GetNewPositionAfterRotationWithLength(Point P0, Point P1, Point P2)
+        public static (int, int) GetPositionAfterRotationCopyLength(Point P0, Point P1, Point P2)
         {
             if ((P0.X == P1.X && P0.Y == P1.Y) || (P0.X == P2.X && P0.Y == P2.Y) || (P1.X == P2.X && P1.Y == P2.Y))
                 return (0, 0);
@@ -120,7 +140,7 @@
             return (newX - P2.X, newY - P2.Y);
         }
 
-        public static (int, int) GetNewPositionAfterRotationWithFixedLength(Point P0, Point P1, Point P2, double length)
+        public static (int, int) GetPositionAfterRotationFixedLength(Point P0, Point P1, Point P2, double length)
         {
             double dx01 = P1.X - P0.X;
             double dy01 = P1.Y - P0.Y;
@@ -136,7 +156,7 @@
             return (newX - P2.X, newY - P2.Y);
         }
 
-        public static (int, int) GetNewPositionAfterRotationHorizontalKeepLength(Point P0, Point P1, Point P2)
+        public static (int, int) GetPositionAfterRotationHorizontal(Point P0, Point P1, Point P2)
         {
             double lengthP1P2 = Math.Sqrt(Math.Pow(P2.X - P1.X, 2) + Math.Pow(P2.Y - P1.Y, 2));
 
@@ -150,7 +170,7 @@
         }
 
 
-        public static (int, int) GetNewPositionAfterRotationHorizontalP0P1(Point P0, Point P1, Point P2)
+        public static (int, int) GetPositionAfterRotationCopyLengthHorizontal(Point P0, Point P1, Point P2)
         {
             double lengthP0P1 = Math.Sqrt(Math.Pow(P1.X - P0.X, 2) + Math.Pow(P1.Y - P0.Y, 2));
 
@@ -165,7 +185,7 @@
             return (newX - P2.X, newY - P2.Y);
         }
 
-        public static (int, int) GetNewPositionAfterRotationVerticalKeepLength(Point P0, Point P1, Point P2)
+        public static (int, int) GetPositionAfterRotationVertical(Point P0, Point P1, Point P2)
         {
             double lengthP1P2 = Math.Sqrt(Math.Pow(P2.X - P1.X, 2) + Math.Pow(P2.Y - P1.Y, 2));
 
@@ -178,7 +198,7 @@
             return (newX - P2.X, newY - P2.Y);
         }
 
-        public static (int, int) GetNewPositionAfterRotationVerticalP0P1(Point P0, Point P1, Point P2)
+        public static (int, int) GetPositionAfterRotationCopyLengthVertical(Point P0, Point P1, Point P2)
         {
             double lengthP0P1 = Math.Sqrt(Math.Pow(P1.X - P0.X, 2) + Math.Pow(P1.Y - P0.Y, 2));
 
@@ -202,155 +222,87 @@
 
             if (this.ControlsContinuity && (dx != 0 || dy != 0))
             {
-                if (L1.P1.State == PointState.Bezier && L1.P1 != prevPoint)
+                for(int i = 0; i < 2; i++)
                 {
-                    L1.P1.BezierStructure.AdjustCurvePoints(this, dx, dy, originPoint);
-                }
-                if (L2.P2.State == PointState.Bezier && L2.P2 != prevPoint)
-                {
-                    L2.P2.BezierStructure.AdjustCurvePoints(this, dx, dy, originPoint);
+                    if (L[i].P[i].State == PointState.Bezier && L[i].P[i] != prevPoint)
+                    {
+                        L[i].P[i].BezierStructure.AdjustCurvePoints(this, dx, dy, originPoint);
+                    }
                 }
             }
 
             X += dx;
             Y += dy;
 
-            if (L1.P1 != prevPoint)
+            for (int i = 0; i < 2; i++)
             {
-                (int x, int y) howToMove = (0, 0);
-                if (PassesOrientationState && State == PointState.G1Continuous && !(prevPoint == null && L1.P1.State != PointState.Bezier))
+                if (L[i].P[i] != prevPoint)
                 {
-                    switch (L1.State)
+                    (int x, int y) howToMove = (0, 0);
+                    if (PassesOrientationState && State == PointState.G1Continuous && !(i == 0 && prevPoint == null && L[i].P[i].State != PointState.Bezier))
                     {
-                        case Line.LineState.ForcedLength:
-                            howToMove = GetNewPositionAfterRotationWithFixedLength(L2.P2, this, L1.P1, L1.WantedLength);
-                            break;
-                        case Line.LineState.Horizontal:
-                            howToMove = GetNewPositionAfterRotationHorizontalKeepLength(L2.P2, this, L1.P1);
-                            break;
-                        case Line.LineState.Vertical:
-                            howToMove = GetNewPositionAfterRotationVerticalKeepLength(L2.P2, this, L1.P1);
-                            break;
-                        default:
-                            howToMove = GetNewPositionAfterRotation(L2.P2, this, L1.P1);
-                            break;
+                        switch (L[i].State)
+                        {
+                            case Line.LineState.ForcedLength:
+                                howToMove = GetPositionAfterRotationFixedLength(L[1 - i].P[1 - i], this, L[i].P[i], L[i].WantedLength);
+                                break;
+                            case Line.LineState.Horizontal:
+                                howToMove = GetPositionAfterRotationHorizontal(L[1 - i].P[1 - i], this, L[i].P[i]);
+                                break;
+                            case Line.LineState.Vertical:
+                                howToMove = GetPositionAfterRotationVertical(L[1 - i].P[1 - i], this, L[i].P[i]);
+                                break;
+                            default:
+                                howToMove = GetPositionAfterRotation(L[1 - i].P[1 - i], this, L[i].P[i]);
+                                break;
+                        }
+                        L[i].P[i].MoveLocation(howToMove.x, howToMove.y, originPoint, this);
                     }
-                    L1.P1.MoveLocation(howToMove.x, howToMove.y, originPoint, this);
-                }
-                else if (PassesOrientationState && State == PointState.C1Continuous && !(prevPoint == null && L1.P1.State != PointState.Bezier))
-                {
-                    switch (L1.State)
+                    else if (PassesOrientationState && State == PointState.C1Continuous && !(i == 0 && prevPoint == null && L[i].P[i].State != PointState.Bezier))
                     {
-                        case Line.LineState.ForcedLength:
-                            howToMove = GetNewPositionAfterRotationWithFixedLength(L2.P2, this, L1.P1, L1.WantedLength);
-                            break;
-                        case Line.LineState.Horizontal:
-                            howToMove = GetNewPositionAfterRotationHorizontalP0P1(L2.P2, this, L1.P1);
-                            break;
-                        case Line.LineState.Vertical:
-                            howToMove = GetNewPositionAfterRotationVerticalP0P1(L2.P2, this, L1.P1);
-                            break;
-                        default:
-                            howToMove = GetNewPositionAfterRotationWithLength(L2.P2, this, L1.P1);
-                            break;
+                        switch (L[i].State)
+                        {
+                            case Line.LineState.ForcedLength:
+                                howToMove = GetPositionAfterRotationFixedLength(L[1 - i].P[1 - i], this, L[i].P[i], L[i].WantedLength);
+                                break;
+                            case Line.LineState.Horizontal:
+                                howToMove = GetPositionAfterRotationCopyLengthHorizontal(L[1 - i].P[1 - i], this, L[i].P[i]);
+                                break;
+                            case Line.LineState.Vertical:
+                                howToMove = GetPositionAfterRotationCopyLengthVertical(L[1 - i].P[1 - i], this, L[i].P[i]);
+                                break;
+                            default:
+                                howToMove = GetPositionAfterRotationCopyLength(L[1 - i].P[1 - i], this, L[i].P[i]);
+                                break;
+                        }
+                        L[i].P[i].MoveLocation(howToMove.x, howToMove.y, originPoint, this);
                     }
-                    L1.P1.MoveLocation(howToMove.x, howToMove.y, originPoint, this);
-                }
-                else
-                {
-                    switch (L1.State)
+                    else
                     {
-                        case Line.LineState.None:
-                            if (L1.P1.ControlsContinuity || this.ControlsContinuity)
-                                L1.P1.MoveLocation(0, 0, originPoint, this);
-                            break;
-                        case Line.LineState.Vertical:
-                            L1.P1.MoveLocation(X - L1.P1.X, 0, originPoint, this);
-                            break;
-                        case Line.LineState.Horizontal:
+                        switch (L[i].State)
+                        {
+                            case Line.LineState.None:
+                                if (L[i].P[i].ControlsContinuity || this.ControlsContinuity)
+                                    L[i].P[i].MoveLocation(0, 0, originPoint, this);
+                                break;
+                            case Line.LineState.Vertical:
+                                L[i].P[i].MoveLocation(X - L[i].P[i].X, 0, originPoint, this);
+                                break;
+                            case Line.LineState.Horizontal:
+                                L[i].P[i].MoveLocation(0, Y - L[i].P[i].Y, originPoint, this);
+                                break;
+                            case Line.LineState.ForcedLength:
+                                double currentDistance = Math.Sqrt((X - L[i].P[i].X) * (X - L[i].P[i].X) + (double)((Y - L[i].P[i].Y) * (Y - L[i].P[i].Y)));
+                                double wantedDistance = L[i].WantedLength;
+                                double multiplier = wantedDistance / currentDistance - 1;
 
-                            L1.P1.MoveLocation(0, Y - L1.P1.Y, originPoint, this);
-                            break;
-                        case Line.LineState.ForcedLength:
-                            double currentDistance = Math.Sqrt((X - L1.P1.X) * (X - L1.P1.X) + (double)((Y - L1.P1.Y) * (Y - L1.P1.Y)));
-                            double wantedDistance = L1.WantedLength;
-                            double multiplier = wantedDistance / currentDistance - 1;
+                                int mx = (int)Math.Round((L[i].P[i].X - X) * multiplier);
+                                int my = (int)Math.Round((L[i].P[i].Y - Y) * multiplier);
 
-                            int mx = (int)Math.Round((L1.P1.X - X) * multiplier);
-                            int my = (int)Math.Round((L1.P1.Y - Y) * multiplier);
+                                L[i].P[i].MoveLocation(mx, my, originPoint, this);
 
-                            L1.P1.MoveLocation(mx, my, originPoint, this);
-
-                            break;
-                    }
-                }
-            }
-
-            if (L2 != null && L2.P2 != prevPoint)
-            {
-                (int x, int y) howToMove = (0, 0);
-                if (PassesOrientationState && State == PointState.G1Continuous && L1 != null && !(prevPoint == null && L2.P2.State != PointState.Bezier))
-                {
-                    switch (L2.State)
-                    {
-                        case Line.LineState.ForcedLength:
-                            howToMove = GetNewPositionAfterRotationWithFixedLength(L1.P1, this, L2.P2, L2.WantedLength);
-                            break;
-                        case Line.LineState.Horizontal:
-                            howToMove = GetNewPositionAfterRotationHorizontalKeepLength(L1.P1, this, L2.P2);
-                            break;
-                        case Line.LineState.Vertical:
-                            howToMove = GetNewPositionAfterRotationVerticalKeepLength(L1.P1, this, L2.P2);
-                            break;
-                        default:
-                            howToMove = GetNewPositionAfterRotation(L1.P1, this, L2.P2);
-                            break;
-                    }
-                    L2.P2.MoveLocation(howToMove.x, howToMove.y, originPoint, this);
-                }
-                else if (PassesOrientationState && State == PointState.C1Continuous && L1 != null && !(prevPoint == null && L2.P2.State != PointState.Bezier))
-                {
-                    switch (L2.State)
-                    {
-                        case Line.LineState.ForcedLength:
-                            howToMove = GetNewPositionAfterRotationWithFixedLength(L1.P1, this, L2.P2, L2.WantedLength);
-                            break;
-                        case Line.LineState.Horizontal:
-                            howToMove = GetNewPositionAfterRotationHorizontalP0P1(L1.P1, this, L2.P2);
-                            break;
-                        case Line.LineState.Vertical:
-                            howToMove = GetNewPositionAfterRotationVerticalP0P1(L1.P1, this, L2.P2);
-                            break;
-                        default:
-                            howToMove = GetNewPositionAfterRotationWithLength(L1.P1, this, L2.P2);
-                            break;
-                    }
-                    L2.P2.MoveLocation(howToMove.x, howToMove.y, originPoint, this);
-                }
-                else
-                {
-                    switch (L2.State)
-                    {
-                        case Line.LineState.None:
-                            if (L2.P2.ControlsContinuity || this.ControlsContinuity)
-                                L2.P2.MoveLocation(0, 0, originPoint, this);
-                            break;
-                        case Line.LineState.Vertical:
-                            L2.P2.MoveLocation(X - L2.P2.X, 0, originPoint, this);
-                            break;
-                        case Line.LineState.Horizontal:
-                            L2.P2.MoveLocation(0, Y - L2.P2.Y, originPoint, this);
-                            break;
-                        case Line.LineState.ForcedLength:
-                            double currentDistance = Math.Sqrt((X - L2.P2.X) * (X - L2.P2.X) + (double)((Y - L2.P2.Y) * (Y - L2.P2.Y)));
-                            double wantedDistance = L2.WantedLength;
-                            double multiplier = wantedDistance / currentDistance - 1;
-
-                            int mx = (int)Math.Round((L2.P2.X - X) * multiplier);
-                            int my = (int)Math.Round((L2.P2.Y - Y) * multiplier);
-
-                            L2.P2.MoveLocation(mx, my, originPoint, this);
-                            break;
+                                break;
+                        }
                     }
                 }
             }
@@ -366,49 +318,35 @@
         {
             State = state;
 
-            switch (state)
+            for(int i = 0; i < 2; i++)
             {
-                case PointState.G0Continuous:
-                    if (L1.P1.State == PointState.Bezier)
-                    {
-                        L1.ChangeState(Line.LineState.None);
-                    }
-                    if (L2.P2.State == PointState.Bezier)
-                    {
-                        L2.ChangeState(Line.LineState.None);
-                    }
-                    break;
-                case PointState.G1Continuous:
-                    if (L1.P1.State == PointState.Bezier && L1.State == Line.LineState.ForcedLength)
-                    {
-                        L1.ChangeState(Line.LineState.None);
-                    }
-                    if (L2.P2.State == PointState.Bezier && L2.State == Line.LineState.ForcedLength)
-                    {
-                        L2.ChangeState(Line.LineState.None);
-                    }
-                    if (L1.P1.State == PointState.Bezier && (L2.State == Line.LineState.Horizontal || L2.State == Line.LineState.Vertical))
-                    {
-                        L1.ChangeState(L2.State);
-                    }
-                    if (L2.P2.State == PointState.Bezier && (L1.State == Line.LineState.Horizontal || L1.State == Line.LineState.Vertical))
-                    {
-                        L2.ChangeState(L1.State);
-                    }
-                    break;
-                case PointState.C1Continuous:
-                    if (L1.P1.State == PointState.Bezier && L2.State != Line.LineState.Bezier && L2.State != Line.LineState.None)
-                    {
-                        L1.ChangeState(L2.State);
-                        L1.WantedLength = L2.WantedLength / 3;
-                    }
-                    if (L2.P2.State == PointState.Bezier && L1.State != Line.LineState.Bezier && L1.State != Line.LineState.None)
-                    {
-                        L2.ChangeState(L1.State);
-                        L2.WantedLength = L1.WantedLength / 3;
-                    }
-                    break;
-            }
+                switch (state)
+                {
+                    case PointState.G0Continuous:
+                        if (L[i].P[i].State == PointState.Bezier)
+                        {
+                            L[i].ChangeState(Line.LineState.None);
+                        }
+                        break;
+                    case PointState.G1Continuous:
+                        if (L[i].P[i].State == PointState.Bezier && L[i].State == Line.LineState.ForcedLength)
+                        {
+                            L[i].ChangeState(Line.LineState.None);
+                        }
+                        if (L[i].P[i].State == PointState.Bezier && (L[1 - i].State == Line.LineState.Horizontal || L[1 - i].State == Line.LineState.Vertical))
+                        {
+                            L[i].ChangeState(L[1 - i].State);
+                        }
+                        break;
+                    case PointState.C1Continuous:
+                        if (L[i].P[i].State == PointState.Bezier && L[1 - i].State != Line.LineState.Bezier && L[1 - i].State != Line.LineState.None)
+                        {
+                            L[i].ChangeState(L[1 - i].State);
+                            L[i].WantedLength = L[1 - i].WantedLength / 3;
+                        }
+                        break;
+                }
+            } 
 
             MoveLocation(0, 0);
         }
