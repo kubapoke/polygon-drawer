@@ -30,6 +30,46 @@ namespace PolygonDrawer
             typeof(Panel).InvokeMember("DoubleBuffered",                                    // taken from https://stackoverflow.com/questions/8046560/how-to-stop-flickering-c-sharp-winforms
             BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
             null, mainSplitContainer.Panel1, new object[] { true });
+
+            // create an example polygon
+
+            {
+                Polygon = new Polygon();
+
+                Polygon.AddCreationPoint(150, 350);
+                Polygon.AddCreationPoint(450, 300);
+                Polygon.AddCreationPoint(430, 202);
+                Polygon.AddCreationPoint(225, 100);
+                Polygon.AddCreationPoint(150, 200);
+                Polygon.AddCreationPoint(150, 350);
+
+                Line l;
+                Point p;
+
+                l = Polygon.GetLineAtLocation(150, 275)!;
+                l.ChangeState(Line.LineState.Vertical);
+
+                l = Polygon.GetLineAtLocation(437, 250)!;
+                l.ChangeState(Line.LineState.FixedLength);
+
+                l = Polygon.GetLineAtLocation(327, 151)!;
+                l.ChangeState(Line.LineState.Bezier);
+
+                p = Polygon.GetPointAtLocation(430, 202)!;
+                p.ChangeState(Point.PointState.G0Continuous);
+
+                p = Polygon.GetPointAtLocation(225, 100)!;
+                p.ChangeState(Point.PointState.G1Continuous);
+
+                p = Polygon.GetPointAtLocation(250, 67)!;
+                p.MoveLocation(25, -33);
+
+                p = Polygon.GetPointAtLocation(423, 169)!;
+                p.MoveLocation(75, -50);
+
+
+                redrawPolygon();
+            }
         }
 
         private void adjustVertexToolStripMenu()
