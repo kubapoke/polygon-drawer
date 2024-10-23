@@ -48,7 +48,7 @@
             None,
             Vertical,
             Horizontal,
-            ForcedLength,
+            FixedLength,
             Bezier
         };
 
@@ -132,12 +132,12 @@
                             if (P[i].PassesOrientationState && P[i].L[i].P[i].State == Point.PointState.Bezier)
                                 P[i].L[i].ChangeState(LineState.Horizontal);
                             break;
-                        case LineState.ForcedLength:
+                        case LineState.FixedLength:
                             WantedLength = Length;
 
                             if (P[i].PassesLengthState && P[i].L[i].P[i].State == Point.PointState.Bezier)
                             {
-                                P[i].L[i].ChangeState(LineState.ForcedLength);
+                                P[i].L[i].ChangeState(LineState.FixedLength);
                                 P[i].L[i].WantedLength = Length / 3;
                             }
                             if (!P[i].PassesLengthState && P[i].PassesOrientationState && P[i].L[i].P[i].State == Point.PointState.Bezier &&
@@ -165,8 +165,30 @@
             }
         }
 
-        public void SetWantedLength(double length)
+        public bool ValidateSetLength(double length)
         {
+            Line line = L2;
+            double sumLength = length, maxLength = length;
+
+            while (line != this)
+            {
+                if (line.State != LineState.FixedLength)
+                    return true;
+
+                sumLength += line.WantedLength;
+                maxLength = Math.Max(maxLength, line.Length);
+
+                line = line.L2;
+            }
+
+            return maxLength <= sumLength - maxLength;
+        }
+
+        public bool SetWantedLength(double length)
+        {
+            if (!ValidateSetLength(length))
+                return false;
+
             WantedLength = length;
 
             int midX = (int)Math.Round((P1.X + P2.X) / 2.0);
@@ -196,6 +218,14 @@
                 P2.L2.WantedLength = Length / 3;
                 P2.MoveLocation(0, 0);
             }
+
+            return true;
+        }
+
+        public void Touch()
+        {
+            P1.MoveLocation(0, 0);
+            P2.MoveLocation(0, 0);
         }
     }
 }

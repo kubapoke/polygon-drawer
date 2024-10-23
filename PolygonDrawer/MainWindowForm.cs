@@ -64,7 +64,7 @@ namespace PolygonDrawer
                 addPointToolStripMenuItem.Enabled = !isBezierLine;
                 forceVerticalToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Vertical && !hasVerticalNeighbors && !isBezierLine;
                 forceHorizontalToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Horizontal && !hasHorizontalNeighbors && !isBezierLine;
-                currentLengthToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.ForcedLength && !isBezierLine;
+                currentLengthToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.FixedLength && !isBezierLine;
                 setLengthToolStripMenuItem.Enabled = !isBezierLine;
                 setBezierCurveToolStripMenuItem.Enabled = InspectedLine.State != Line.LineState.Bezier;
                 removeBoundsToolStripMenuItem.Enabled = !InspectedLine.IsDefault();
@@ -78,7 +78,7 @@ namespace PolygonDrawer
                 if (!CreatingNewPolygon && Polygon != null)
                 {
                     Polygon.ChangeStateOfAllLines(Line.LineState.None);
-                    Polygon.ChangeStateOfAllLines(Line.LineState.ForcedLength);
+                    Polygon.ChangeStateOfAllLines(Line.LineState.FixedLength);
                 }
 
                 redrawPolygon();
@@ -90,7 +90,7 @@ namespace PolygonDrawer
                 if (!CreatingNewPolygon && Polygon != null)
                 {
                     Polygon.ChangeStateOfAllLines(Line.LineState.None);
-                    Polygon.ChangeStateOfAllLines(Line.LineState.ForcedLength, 100);
+                    Polygon.ChangeStateOfAllLines(Line.LineState.FixedLength, 100);
                 }
 
                 redrawPolygon();
@@ -303,7 +303,7 @@ namespace PolygonDrawer
         {
             if (InspectedLine != null)
             {
-                InspectedLine.ChangeState(Line.LineState.ForcedLength);
+                InspectedLine.ChangeState(Line.LineState.FixedLength);
                 redrawPolygon();
             }
         }
@@ -312,14 +312,13 @@ namespace PolygonDrawer
         {
             if (InspectedLine != null)
             {
-                var inputForm = new LengthInputForm(InspectedLine.State == Line.LineState.ForcedLength ? InspectedLine.WantedLength : InspectedLine.Length);
+                var inputForm = new LengthInputForm(InspectedLine.State == Line.LineState.FixedLength ? InspectedLine.WantedLength : InspectedLine.Length, x => InspectedLine.ValidateSetLength(x));
 
                 if (inputForm.ShowDialog() == DialogResult.OK && inputForm.Result != null)
                 {
-                    InspectedLine.ChangeState(Line.LineState.ForcedLength);
+                    InspectedLine.ChangeState(Line.LineState.FixedLength);
                     InspectedLine.SetWantedLength((double)inputForm.Result);
-
-
+                    InspectedLine.Touch();
 
                     redrawPolygon();
                 }

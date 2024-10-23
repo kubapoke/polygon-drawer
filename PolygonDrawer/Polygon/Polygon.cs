@@ -231,7 +231,7 @@
                             case Line.LineState.Vertical:
                                 Drawer.DrawTextNextToLine(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, "|", null);
                                 break;
-                            case Line.LineState.ForcedLength:
+                            case Line.LineState.FixedLength:
                                 Drawer.DrawTextNextToLine(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, $"{(int)Math.Round(line.WantedLength)}px", null);
                                 break;
                         }

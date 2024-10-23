@@ -243,7 +243,7 @@
                     {
                         switch (L[i].State)
                         {
-                            case Line.LineState.ForcedLength:
+                            case Line.LineState.FixedLength:
                                 howToMove = GetPositionAfterRotationFixedLength(L[1 - i].P[1 - i], this, L[i].P[i], L[i].WantedLength);
                                 break;
                             case Line.LineState.Horizontal:
@@ -262,7 +262,7 @@
                     {
                         switch (L[i].State)
                         {
-                            case Line.LineState.ForcedLength:
+                            case Line.LineState.FixedLength:
                                 howToMove = GetPositionAfterRotationFixedLength(L[1 - i].P[1 - i], this, L[i].P[i], L[i].WantedLength);
                                 break;
                             case Line.LineState.Horizontal:
@@ -291,7 +291,7 @@
                             case Line.LineState.Horizontal:
                                 L[i].P[i].MoveLocation(0, Y - L[i].P[i].Y, originPoint, this);
                                 break;
-                            case Line.LineState.ForcedLength:
+                            case Line.LineState.FixedLength:
                                 double currentDistance = Math.Sqrt((X - L[i].P[i].X) * (X - L[i].P[i].X) + (double)((Y - L[i].P[i].Y) * (Y - L[i].P[i].Y)));
                                 double wantedDistance = L[i].WantedLength;
                                 double multiplier = wantedDistance / currentDistance - 1;
@@ -329,7 +329,7 @@
                         }
                         break;
                     case PointState.G1Continuous:
-                        if (L[i].P[i].State == PointState.Bezier && L[i].State == Line.LineState.ForcedLength)
+                        if (L[i].P[i].State == PointState.Bezier && L[i].State == Line.LineState.FixedLength)
                         {
                             L[i].ChangeState(Line.LineState.None);
                         }
