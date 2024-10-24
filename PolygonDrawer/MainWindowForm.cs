@@ -12,6 +12,25 @@ namespace PolygonDrawer
         private Line? InspectedLine;
         private Action<Graphics, int, int, int, int, System.Drawing.Color?> DrawLineAction = Drawer.BresenhamDrawLine;
 
+        private readonly Dictionary<string, string> Instructions = new Dictionary<string, string>()
+        {
+            { "base", "Click the \"New Polygon\" button to delete the current shape and start creating a new one.\n\nHold and drag a vertex with your left mouse button to move it, or hold and drag the polygon to move its entirety.\n\n" +
+                "Right click a vertex or an edge to open a context menu with more options.\n\nYou can disable and re-enable captions with the \"Captions\" button, as well as swap the line drawing algorithm with the provided radio button" },
+            { "drawing", "Click anywhere within the drawing area to create a new polygon vertex (connected to the previous one you've created).\n\nOnce you have drawn at least three vertices, connect the last vertex to the first one, in order to " +
+                "finish drawing." },
+            { "vertex", "Delete point - remove the point, connecting the adjacent vertices with an unconstrained line.\n\nThe following continuity options only affect vertices which are a staring/ending point of a Bezier curve:\n\n" +
+                "Set G0 continuity - sets G0 continuity for the vertex.\n\n" +
+                "Set G1 continuity - sets G1 continuity for the vertex.\n\n" +
+                "Set C1 continuity - sets C1 continuity for the vertex." },
+            { "edge", "Add point - adds a vertex at the selected position. Removes constraints from adjacent edges.\n\n" +
+                "Make vertical - forces the line to be vertical.\n\n" +
+                "Make horizontal - forces the line to be horizontal.\n\n" +
+                "Force length - forces the edge's length to either to its current length or a specified length, depending on the suboption chosen.\n\n" +
+                "Create Bezier curve - transforms the edge into a Bezier curve.\n\n" +
+                "Remove restrictions - remove any restrictions from the edge." }
+
+        };
+
 
         public MainWindowForm()
         {
@@ -30,6 +49,8 @@ namespace PolygonDrawer
             typeof(Panel).InvokeMember("DoubleBuffered",                                    // taken from https://stackoverflow.com/questions/8046560/how-to-stop-flickering-c-sharp-winforms
             BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
             null, mainSplitContainer.Panel1, new object[] { true });
+
+            ChangeText("base");
 
             // create an example polygon
 
@@ -67,6 +88,7 @@ namespace PolygonDrawer
                 p = Polygon.GetPointAtLocation(423, 169)!;
                 p.MoveLocation(75, -50);
 
+                Polygon.MovePolygon(0, 25);
 
                 redrawPolygon();
             }
@@ -172,6 +194,7 @@ namespace PolygonDrawer
         {
             Polygon = new Polygon();
             CreatingNewPolygon = true;
+            ChangeText("drawing");
             redrawPolygon();
         }
 
@@ -184,6 +207,9 @@ namespace PolygonDrawer
                     CreatingNewPolygon = Polygon.AddCreationPoint(e.X, e.Y);
 
                     redrawPolygon();
+
+                    if (CreatingNewPolygon == false)
+                        ChangeText("base");
                 }
             }
             else if (e.Button == MouseButtons.Right)
@@ -390,6 +416,34 @@ namespace PolygonDrawer
                 InspectedPoint.ChangeState(Point.PointState.C1Continuous);
                 redrawPolygon();
             }
+        }
+
+        private void ChangeText(string key)
+        {
+            if (Instructions.ContainsKey(key))
+            {
+                instructionsTextBox.Text = Instructions[key];
+            }
+        }
+
+        private void vertexContextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ChangeText("vertex");
+        }
+
+        private void vertexContextMenuStrip_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+        {
+            ChangeText("base");
+        }
+
+        private void lineContextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ChangeText("edge");
+        }
+
+        private void lineContextMenuStrip_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+        {
+            ChangeText("base");
         }
     }
 }

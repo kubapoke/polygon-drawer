@@ -31,7 +31,7 @@
             components = new System.ComponentModel.Container();
             mainSplitContainer = new SplitContainer();
             captionButton = new Button();
-            richTextBox1 = new RichTextBox();
+            instructionsTextBox = new RichTextBox();
             bresenhamRadioButton = new RadioButton();
             libraryRadioButton = new RadioButton();
             newPolyButton = new Button();
@@ -75,7 +75,7 @@
             // 
             mainSplitContainer.Panel2.BackColor = SystemColors.ControlLight;
             mainSplitContainer.Panel2.Controls.Add(captionButton);
-            mainSplitContainer.Panel2.Controls.Add(richTextBox1);
+            mainSplitContainer.Panel2.Controls.Add(instructionsTextBox);
             mainSplitContainer.Panel2.Controls.Add(bresenhamRadioButton);
             mainSplitContainer.Panel2.Controls.Add(libraryRadioButton);
             mainSplitContainer.Panel2.Controls.Add(newPolyButton);
@@ -93,15 +93,15 @@
             captionButton.UseVisualStyleBackColor = true;
             captionButton.Click += captionButton_Click;
             // 
-            // richTextBox1
+            // instructionsTextBox
             // 
-            richTextBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
-            richTextBox1.Enabled = false;
-            richTextBox1.Location = new System.Drawing.Point(3, 125);
-            richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(190, 322);
-            richTextBox1.TabIndex = 2;
-            richTextBox1.Text = "";
+            instructionsTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
+            instructionsTextBox.Enabled = false;
+            instructionsTextBox.Location = new System.Drawing.Point(3, 125);
+            instructionsTextBox.Name = "instructionsTextBox";
+            instructionsTextBox.Size = new Size(190, 322);
+            instructionsTextBox.TabIndex = 2;
+            instructionsTextBox.Text = "\n";
             // 
             // bresenhamRadioButton
             // 
@@ -144,7 +144,9 @@
             // 
             vertexContextMenuStrip.Items.AddRange(new ToolStripItem[] { deleteVertexToolStripMenuItem, setG0ContinuityToolStripMenuItem, setG1ContinuityToolStripMenuItem, setC1ContinuityToolStripMenuItem });
             vertexContextMenuStrip.Name = "contextMenuStrip1";
-            vertexContextMenuStrip.Size = new Size(181, 114);
+            vertexContextMenuStrip.Size = new Size(165, 92);
+            vertexContextMenuStrip.Closing += vertexContextMenuStrip_Closing;
+            vertexContextMenuStrip.Opening += vertexContextMenuStrip_Opening;
             // 
             // deleteVertexToolStripMenuItem
             // 
@@ -178,7 +180,9 @@
             // 
             lineContextMenuStrip.Items.AddRange(new ToolStripItem[] { addPointToolStripMenuItem, forceVerticalToolStripMenuItem, forceHorizontalToolStripMenuItem, forceLengthToolStripMenuItem, setBezierCurveToolStripMenuItem, removeBoundsToolStripMenuItem });
             lineContextMenuStrip.Name = "lineContextMenuStrip";
-            lineContextMenuStrip.Size = new Size(179, 136);
+            lineContextMenuStrip.Size = new Size(181, 158);
+            lineContextMenuStrip.Closing += lineContextMenuStrip_Closing;
+            lineContextMenuStrip.Opening += lineContextMenuStrip_Opening;
             // 
             // addPointToolStripMenuItem
             // 
@@ -269,7 +273,7 @@
         private ToolStripMenuItem forceLengthToolStripMenuItem;
         private ToolStripMenuItem setBezierCurveToolStripMenuItem;
         private ToolStripMenuItem removeBoundsToolStripMenuItem;
-        private RichTextBox richTextBox1;
+        private RichTextBox instructionsTextBox;
         private Button captionButton;
         private ToolStripMenuItem currentLengthToolStripMenuItem;
         private ToolStripMenuItem setLengthToolStripMenuItem;
