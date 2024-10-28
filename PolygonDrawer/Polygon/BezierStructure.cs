@@ -106,7 +106,7 @@
         {
             Drawer.DrawBezierCurve(g, V0, V1, V2, V3);
 
-            for (int i = 0; i < V.Length; i += 2)
+            for (int i = 0; i < V.Length - 1; i++)
             {
                 drawLineAction(g, V[i].X, V[i].Y, V[(i + 1) % V.Length].X, V[(i + 1) % V.Length].Y, null);
             }
