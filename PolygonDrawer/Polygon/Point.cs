@@ -1,8 +1,10 @@
-﻿namespace PolygonDrawer
+﻿using System.Numerics;
+
+namespace PolygonDrawer
 {
     internal class Point
     {
-        public Point(int x, int y)
+        public Point(double x, double y)
         {
             X = x;
             Y = y;
@@ -10,10 +12,10 @@
             BezierStructure = new BezierStructure(null);
         }
 
-        public int X { get; set; }
-        public int Y { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
         public Line[] L = new Line[2];
-        public Line L1 
+        public Line L1
         {
             get { return L[0]; }
             set { L[0] = value; }
@@ -34,7 +36,7 @@
             set { L2.P2 = value; }
         }
         public BezierStructure BezierStructure { get; set; }
-       
+
         public bool ControlsContinuity
         {
             get
@@ -79,7 +81,7 @@
 
         public PointState State { get; private set; } = PointState.None;
 
-        public int Distance(int x, int y)
+        public double Distance(double x, double y)
         {
             return Math.Max(Math.Abs(x - X), Math.Abs(y - Y));
         }
@@ -95,7 +97,7 @@
             Y = y;
         }
 
-        public static (int, int) GetPositionAfterRotation(Point P0, Point P1, Point P2)
+        public static (double, double) GetPositionAfterRotation(Point P0, Point P1, Point P2)
         {
             if ((P0.X == P1.X && P0.Y == P1.Y) || (P0.X == P2.X && P0.Y == P2.Y) || (P1.X == P2.X && P1.Y == P2.Y))
                 return (0, 0);
@@ -110,13 +112,13 @@
             double unitX = dx01 / lengthP0P1;
             double unitY = dy01 / lengthP0P1;
 
-            int newX = (int)Math.Round(P1.X + unitX * lengthP1P2);
-            int newY = (int)Math.Round(P1.Y + unitY * lengthP1P2);
+            double newX = P1.X + unitX * lengthP1P2;
+            double newY = P1.Y + unitY * lengthP1P2;
 
             return (newX - P2.X, newY - P2.Y);
         }
 
-        public static (int, int) GetPositionAfterRotationCopyLength(Point P0, Point P1, Point P2)
+        public static (double, double) GetPositionAfterRotationCopyLength(Point P0, Point P1, Point P2)
         {
             if ((P0.X == P1.X && P0.Y == P1.Y) || (P0.X == P2.X && P0.Y == P2.Y) || (P1.X == P2.X && P1.Y == P2.Y))
                 return (0, 0);
@@ -134,13 +136,13 @@
             else if (P0.State != PointState.Bezier && P2.State == PointState.Bezier)
                 lengthP0P1 /= 3.0;
 
-            int newX = (int)Math.Round(P1.X + unitX * lengthP0P1);
-            int newY = (int)Math.Round(P1.Y + unitY * lengthP0P1);
+            double newX = P1.X + unitX * lengthP0P1;
+            double newY = P1.Y + unitY * lengthP0P1;
 
             return (newX - P2.X, newY - P2.Y);
         }
 
-        public static (int, int) GetPositionAfterRotationFixedLength(Point P0, Point P1, Point P2, double length)
+        public static (double, double) GetPositionAfterRotationFixedLength(Point P0, Point P1, Point P2, double length)
         {
             double dx01 = P1.X - P0.X;
             double dy01 = P1.Y - P0.Y;
@@ -150,27 +152,27 @@
             double unitX = dx01 / lengthP0P1;
             double unitY = dy01 / lengthP0P1;
 
-            int newX = (int)Math.Round(P1.X + unitX * length);
-            int newY = (int)Math.Round(P1.Y + unitY * length);
+            double newX = P1.X + unitX * length;
+            double newY = P1.Y + unitY * length;
 
             return (newX - P2.X, newY - P2.Y);
         }
 
-        public static (int, int) GetPositionAfterRotationHorizontal(Point P0, Point P1, Point P2)
+        public static (double, double) GetPositionAfterRotationHorizontal(Point P0, Point P1, Point P2)
         {
             double lengthP1P2 = Math.Sqrt(Math.Pow(P2.X - P1.X, 2) + Math.Pow(P2.Y - P1.Y, 2));
 
             if (P0.X == P1.X && P0.Y == P1.Y)
                 return (0, 0);
 
-            int newX = (int)Math.Round(P1.X + Math.Sign(P1.X - P0.X) * Math.Abs(lengthP1P2));
-            int newY = P1.Y;
+            double newX = P1.X + Math.Sign(P1.X - P0.X) * Math.Abs(lengthP1P2);
+            double newY = P1.Y;
 
             return (newX - P2.X, newY - P2.Y);
         }
 
 
-        public static (int, int) GetPositionAfterRotationCopyLengthHorizontal(Point P0, Point P1, Point P2)
+        public static (double, double) GetPositionAfterRotationCopyLengthHorizontal(Point P0, Point P1, Point P2)
         {
             double lengthP0P1 = Math.Sqrt(Math.Pow(P1.X - P0.X, 2) + Math.Pow(P1.Y - P0.Y, 2));
 
@@ -179,26 +181,26 @@
             else if (P0.State != PointState.Bezier && P2.State == PointState.Bezier)
                 lengthP0P1 /= 3.0;
 
-            int newX = (int)Math.Round(P1.X + Math.Sign(P1.X - P0.X) * Math.Abs(lengthP0P1));
-            int newY = P1.Y;
+            double newX = P1.X + Math.Sign(P1.X - P0.X) * Math.Abs(lengthP0P1);
+            double newY = P1.Y;
 
             return (newX - P2.X, newY - P2.Y);
         }
 
-        public static (int, int) GetPositionAfterRotationVertical(Point P0, Point P1, Point P2)
+        public static (double, double) GetPositionAfterRotationVertical(Point P0, Point P1, Point P2)
         {
             double lengthP1P2 = Math.Sqrt(Math.Pow(P2.X - P1.X, 2) + Math.Pow(P2.Y - P1.Y, 2));
 
             if (P0.X == P1.X && P0.Y == P1.Y)
                 return (0, 0);
 
-            int newX = P1.X;
-            int newY = (int)Math.Round(P1.Y + Math.Sign(P1.Y - P0.Y) * Math.Abs(lengthP1P2));
+            double newX = P1.X;
+            double newY = P1.Y + Math.Sign(P1.Y - P0.Y) * Math.Abs(lengthP1P2);
 
             return (newX - P2.X, newY - P2.Y);
         }
 
-        public static (int, int) GetPositionAfterRotationCopyLengthVertical(Point P0, Point P1, Point P2)
+        public static (double, double) GetPositionAfterRotationCopyLengthVertical(Point P0, Point P1, Point P2)
         {
             double lengthP0P1 = Math.Sqrt(Math.Pow(P1.X - P0.X, 2) + Math.Pow(P1.Y - P0.Y, 2));
 
@@ -207,13 +209,13 @@
             else if (P0.State != PointState.Bezier && P2.State == PointState.Bezier)
                 lengthP0P1 /= 3.0;
 
-            int newX = P1.X;
-            int newY = (int)Math.Round(P1.Y + Math.Sign(P1.Y - P0.Y) * Math.Abs(lengthP0P1));
+            double newX = P1.X;
+            double newY = P1.Y + Math.Sign(P1.Y - P0.Y) * Math.Abs(lengthP0P1);
 
             return (newX - P2.X, newY - P2.Y);
         }
 
-        public void MoveLocation(int dx, int dy, Point? originPoint = null, Point? prevPoint = null)
+        public void MoveLocation(double dx, double dy, Point? originPoint = null, Point? prevPoint = null)
         {
             originPoint = originPoint ?? this;
 
@@ -222,7 +224,7 @@
 
             if (this.ControlsContinuity && (dx != 0 || dy != 0))
             {
-                for(int i = 0; i < 2; i++)
+                for (int i = 0; i < 2; i++)
                 {
                     if (L[i].P[i].State == PointState.Bezier && L[i].P[i] != prevPoint)
                     {
@@ -238,7 +240,7 @@
             {
                 if (L[i].P[i] != prevPoint)
                 {
-                    (int x, int y) howToMove = (0, 0);
+                    (double x, double y) howToMove = (0, 0);
                     if (PassesOrientationState && State == PointState.G1Continuous && !(i == 0 && prevPoint == null && L[i].P[i].State != PointState.Bezier))
                     {
                         switch (L[i].State)
@@ -308,7 +310,7 @@
             }
         }
 
-        public void MoveLocationIndependent(int dx, int dy)
+        public void MoveLocationIndependent(double dx, double dy)
         {
             X += dx;
             Y += dy;
@@ -318,7 +320,7 @@
         {
             State = state;
 
-            for(int i = 0; i < 2; i++)
+            for (int i = 0; i < 2; i++)
             {
                 switch (state)
                 {
@@ -346,9 +348,14 @@
                         }
                         break;
                 }
-            } 
+            }
 
             MoveLocation(0, 0);
+        }
+
+        public static implicit operator Vector2(Point point)
+        {
+            return new Vector2((float)point.X, (float)point.Y);
         }
     }
 }
