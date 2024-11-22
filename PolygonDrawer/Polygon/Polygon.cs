@@ -13,7 +13,7 @@
 
         public bool InBounds(int x, int y)
         {
-            int minX = int.MaxValue, maxX = int.MinValue, minY = int.MaxValue, maxY = int.MinValue;
+            double minX = double.MaxValue, maxX = double.MinValue, minY = double.MaxValue, maxY = double.MinValue;
 
             foreach (var point in Points)
             {
@@ -90,22 +90,19 @@
 
         private Point MovePointToLine(Line l, Point p)
         {
-            float lineVecX = l.P2.X - l.P1.X;
-            float lineVecY = l.P2.Y - l.P1.Y;
+            double lineVecX = l.P2.X - l.P1.X;
+            double lineVecY = l.P2.Y - l.P1.Y;
 
-            float pointVecX = p.X - l.P1.X;
-            float pointVecY = p.Y - l.P1.Y;
+            double pointVecX = p.X - l.P1.X;
+            double pointVecY = p.Y - l.P1.Y;
 
-            float lineLenSq = lineVecX * lineVecX + lineVecY * lineVecY;
-            float t = (pointVecX * lineVecX + pointVecY * lineVecY) / lineLenSq;
+            double lineLenSq = lineVecX * lineVecX + lineVecY * lineVecY;
+            double t = (pointVecX * lineVecX + pointVecY * lineVecY) / lineLenSq;
 
-            float closestX = l.P1.X + t * lineVecX;
-            float closestY = l.P1.Y + t * lineVecY;
+            double closestX = l.P1.X + t * lineVecX;
+            double closestY = l.P1.Y + t * lineVecY;
 
-            int roundedX = (int)Math.Round(closestX);
-            int roundedY = (int)Math.Round(closestY);
-
-            return new Point(roundedX, roundedY);
+            return new Point(closestX, closestY);
         }
 
         public void AddPoint(int l, Point suggestedPoint)
@@ -191,7 +188,7 @@
         {
             foreach (var point in Points)
             {
-                var rectangle = new Rectangle(point.X - Eps, point.Y - Eps, 2 * Eps, 2 * Eps);
+                var rectangle = new Rectangle((int)(point.X - Eps), (int)(point.Y - Eps), 2 * Eps, 2 * Eps);
                 g.FillEllipse(new SolidBrush(Color.Black), rectangle);
 
                 if (captions)
@@ -219,20 +216,20 @@
                 }
                 else
                 {
-                    drawLineAction(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, null);
+                    drawLineAction(g, (int)line.P1.X, (int)line.P1.Y, (int)line.P2.X, (int)line.P2.Y, null);
 
                     if (captions)
                     {
                         switch (line.State)
                         {
                             case Line.LineState.Horizontal:
-                                Drawer.DrawTextNextToLine(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, "_", null);
+                                Drawer.DrawTextNextToLine(g, (int)line.P1.X, (int)line.P1.Y, (int)line.P2.X, (int)line.P2.Y, "_", null);
                                 break;
                             case Line.LineState.Vertical:
-                                Drawer.DrawTextNextToLine(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, "|", null);
+                                Drawer.DrawTextNextToLine(g, (int)line.P1.X, (int)line.P1.Y, (int)line.P2.X, (int)line.P2.Y, "|", null);
                                 break;
                             case Line.LineState.FixedLength:
-                                Drawer.DrawTextNextToLine(g, line.P1.X, line.P1.Y, line.P2.X, line.P2.Y, $"{(int)Math.Round(line.WantedLength)}px", null);
+                                Drawer.DrawTextNextToLine(g, (int)line.P1.X, (int)line.P1.Y, (int)line.P2.X, (int)line.P2.Y, $"{(int)Math.Round(line.WantedLength)}px", null);
                                 break;
                         }
                     }
@@ -241,7 +238,7 @@
 
             if (!IsClosed && N > 0)
             {
-                drawLineAction(g, Points[N - 1].X, Points[N - 1].Y, relativeMousePos.X, relativeMousePos.Y, null);
+                drawLineAction(g, (int)Points[N - 1].X, (int)Points[N - 1].Y, relativeMousePos.X, relativeMousePos.Y, null);
             }
         }
 

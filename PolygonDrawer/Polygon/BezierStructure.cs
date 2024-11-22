@@ -106,22 +106,22 @@
         {
             Drawer.DrawBezierCurve(g, V0, V1, V2, V3);
 
-            for (int i = 0; i < V.Length - 1; i++)
+            for (int i = 0; i < V.Length; i += 2)
             {
-                drawLineAction(g, V[i].X, V[i].Y, V[(i + 1) % V.Length].X, V[(i + 1) % V.Length].Y, null);
+                drawLineAction(g, (int)V[i].X, (int)V[i].Y, (int)V[(i + 1) % V.Length].X, (int)V[(i + 1) % V.Length].Y, null);
             }
 
             System.Drawing.Brush brush = new System.Drawing.SolidBrush(System.Drawing.Color.Gray);
-            System.Drawing.Rectangle r1 = new System.Drawing.Rectangle(V[1].X - Polygon.Eps, V[1].Y - Polygon.Eps, 2 * Polygon.Eps, 2 * Polygon.Eps);
-            System.Drawing.Rectangle r2 = new System.Drawing.Rectangle(V[2].X - Polygon.Eps, V[2].Y - Polygon.Eps, 2 * Polygon.Eps, 2 * Polygon.Eps);
+            System.Drawing.Rectangle r1 = new System.Drawing.Rectangle((int)(V[1].X - Polygon.Eps), (int)(V[1].Y - Polygon.Eps), 2 * Polygon.Eps, 2 * Polygon.Eps);
+            System.Drawing.Rectangle r2 = new System.Drawing.Rectangle((int)(V[2].X - Polygon.Eps), (int)(V[2].Y - Polygon.Eps), 2 * Polygon.Eps, 2 * Polygon.Eps);
 
             g.FillEllipse(brush, r1);
             g.FillEllipse(brush, r2);
         }
 
-        public bool InBounds(int x, int y)
+        public bool InBounds(double x, double y)
         {
-            int minX = int.MaxValue, maxX = int.MinValue, minY = int.MaxValue, maxY = int.MinValue;
+            double minX = double.MaxValue, maxX = double.MinValue, minY = double.MaxValue, maxY = double.MinValue;
 
             foreach (var point in V)
             {
@@ -134,7 +134,7 @@
             return minX <= x && minY <= y && maxX >= x && maxY >= y;
         }
 
-        public void AdjustCurvePoints(Point movedPoint, int dx, int dy, Point originPoint)
+        public void AdjustCurvePoints(Point movedPoint, double dx, double dy, Point originPoint)
         {
             if (V0.X == V3.X && V0.Y == V3.Y)
                 return;

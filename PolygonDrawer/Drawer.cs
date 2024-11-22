@@ -1,4 +1,6 @@
-﻿namespace PolygonDrawer
+﻿using System.Numerics;
+
+namespace PolygonDrawer
 {
     internal class Drawer
     {
@@ -217,47 +219,10 @@
             const int offsetX = 8;
             const int offsetY = -15;
 
-            g.DrawString(text, font, brush, new PointF(p.X + offsetX, p.Y + offsetY));
+            g.DrawString(text, font, brush, new PointF((float)(p.X + offsetX), (float)(p.Y + offsetY)));
         }
 
-        public struct DoublePoint
-        {
-            public double X { get; set; }
-            public double Y { get; set; }
-
-            DoublePoint(double x, double y)
-            {
-                X = x;
-                Y = y;
-            }
-
-            public static implicit operator DoublePoint(Point other)
-            {
-                return new DoublePoint(other.X, other.Y);
-            }
-
-            public static DoublePoint operator +(DoublePoint lhs, DoublePoint rhs)
-            {
-                return new DoublePoint(lhs.X + rhs.X, lhs.Y + rhs.Y);
-            }
-
-            public static DoublePoint operator -(DoublePoint lhs, DoublePoint rhs)
-            {
-                return new DoublePoint(lhs.X - rhs.X, lhs.Y - rhs.Y);
-            }
-
-            public static DoublePoint operator *(DoublePoint lhs, double rhs)
-            {
-                return new DoublePoint(lhs.X * rhs, lhs.Y * rhs);
-            }
-
-            public static DoublePoint operator *(double lhs, DoublePoint rhs)
-            {
-                return new DoublePoint(rhs.X * lhs, rhs.Y * lhs);
-            }
-        }
-
-        public static void DrawBezierCurve(Graphics g, DoublePoint V0, DoublePoint V1, DoublePoint V2, DoublePoint V3)
+        public static void DrawBezierCurve(Graphics g, Vector2 V0, Vector2 V1, Vector2 V2, Vector2 V3)
         {
             double dx = V0.X - V3.X;
             double dy = V0.Y - V3.Y;
@@ -268,17 +233,17 @@
 
             length = Math.Max(length, 50.0);
 
-            double d = 1 / length;
+            float d = 1 / (float)length;
 
-            DoublePoint A0 = V0;
-            DoublePoint A1 = 3 * (V1 - V0);
-            DoublePoint A2 = 3 * (V2 - (2 * V1) + V0);
-            DoublePoint A3 = V3 - (3 * V2) + (3 * V1) - V0;
+            Vector2 A0 = V0;
+            Vector2 A1 = 3 * (V1 - V0);
+            Vector2 A2 = 3 * (V2 - (2 * V1) + V0);
+            Vector2 A3 = V3 - (3 * V2) + (3 * V1) - V0;
 
-            DoublePoint P = A0, prevP = A0;
-            DoublePoint dP = A3 * d * d * d + A2 * d * d + A1 * d;
-            DoublePoint d2P = 6 * A3 * d * d * d + 2 * A2 * d * d;
-            DoublePoint d3P = 6 * A3 * d * d * d;
+            Vector2 P = A0, prevP = A0;
+            Vector2 dP = A3 * d * d * d + A2 * d * d + A1 * d;
+            Vector2 d2P = 6 * A3 * d * d * d + 2 * A2 * d * d;
+            Vector2 d3P = 6 * A3 * d * d * d;
 
             for (int i = 0; i < length; i++)
             {
