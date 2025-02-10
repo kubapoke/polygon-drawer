@@ -14,7 +14,7 @@ setting continuities of their adjacent points.
 
 The project has been tested on a Windows 10 device, 
 and compiled using .NET 8.0. Note that as a WinForms project, 
-it isn't suited for being used on operational systems other 
+it isn't suited for being used on operating systems other 
 than Windows.
 
 If you want to compile the application on your device, install the program, by running `git clone` on this repository:
